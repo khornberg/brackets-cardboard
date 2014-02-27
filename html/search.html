@@ -1,0 +1,6 @@
+    <a data-toggle="dropdown" href="#">Managers</a>
+    <ul class="dropdown-menu" role="menu">
+        {{#getAvailable}}
+        <li>{{.}}</li>
+        {{/getAvailable}}
+    </ul>

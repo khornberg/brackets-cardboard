@@ -1,5 +1,7 @@
 <table class="table table-striped table-condensed row-highlight">
     <tbody>
-        {{ results }}
+        {{#getAvailable}}
+        <tr><td>{{.}}</td></tr>
+        {{/getAvailable}}
     </tbody>
 </table>

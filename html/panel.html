@@ -3,16 +3,21 @@
 
         <div class="pdm-title">{{ EXTENSION_NAME }}</div>
         <div class="pdm-search">
-            <input type="search" placeholder="{{ SEARCH_PLACEHOLDER">
-<!--            <button class="btn">{{ SEARCH }}</button>-->
-            <div class="pdm-managers">
+            <form class="form-inline">
+                <div class="form-group">
+                    <input type="text" placeholder="{{ SEARCH_PLACEHOLDER }}">
+                </div>
+                <div class="form-group">
+                    <div class="pdm-managers dropdown">
 
-            </div>
+                    </div>
+                </div>
+            </form>
+
         </div>
         <button class="pdm-bug">{{ REPORT_BUG }}</button>
         <a href="#" class="close">&times;</a>
     </div>
 
-    <div class="table-container resizable-content pdm-table">
-    </div>
+    <div class="table-container resizable-content pdm-table"></div>
 </div>
