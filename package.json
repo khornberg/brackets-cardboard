@@ -1,0 +1,12 @@
+{
+    "name": "brackets-pdm",
+    "title": "Package/Dependency Manager",
+    "description": "Manage packages/dependencies for your project.",
+    "homepage": "https://github.com/khornberg/brackets-pdm",
+    "version": "0.0.1",
+    "author": "Kyle Hornberg <kyle.hornberg@gmail.com> (http://khornberg.github.io) ",
+    "license": "Apache 2.0",
+    "engines": {
+        "brackets": ">=0.36.0"
+    }
+}
