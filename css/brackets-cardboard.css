@@ -1,0 +1,54 @@
+.brackets-cardboard {
+    display: inline;
+}
+
+
+/* mimics simple-toolbar-layout but allows dropdowns */
+.brackets-cardboard-toolbar-layout {
+    display: -webkit-box;
+    display: -moz-box;
+    display: box;
+    -webkit-box-orient: horizontal;
+    -moz-box-orient: horizontal;
+    box-orient: horizontal;
+    -webkit-box-align: center;
+    -moz-box-align: center;
+    box-align: center;
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    box-flex: 1;    
+    overflow: visible; /* show dropdowns */
+}
+
+.brackets-cardboard-nav {
+    
+}
+
+.brackets-cardboard-search {
+    margin: 0 3px 0 3px;
+}
+
+.brackets-cardboard-bug {
+    position: absolute;
+    top: 50%;
+    margin-top: -1em;
+    right: 25px; 
+}
+
+.brackets-cardboard-table > td:nth-child(0) {
+    width: 30%;
+}
+    
+
+
+/* Toolbar icon */
+#brackets-cardboard-icon {
+    background-image: url(brackets-cardboard.svg);
+    background-size: 24px 24px;
+}
+
+#brackets-cardboard-icon.active {
+    background-image: url(brackets-cardboard-open.svg);
+    background-size: 24px 24px;
+}
+    
