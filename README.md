@@ -2,6 +2,8 @@
 
 Manage your project's packages or dependencies (depending on the tool) from within Brackets.
 
+Cardboard? What do most packages arrive in? A cardboard box. Your packages are arriving in this extension, thus it is called cardboard.
+
 Initially this has the ability to work with npm and bower (seemed like natural choices).
 
 ## Screenshots
@@ -40,7 +42,7 @@ In other words, you can add "classes" that use the "interface". The rest of the 
 `strings.js` localization
 `domain.js` ?
 `html/` html templates
-`css/` css and icons for managers
+`css/` css
 `fonts/` fonts
 `nls/` localization strings
 `tests/` unit tests

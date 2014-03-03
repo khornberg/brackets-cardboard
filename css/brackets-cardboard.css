@@ -14,14 +14,7 @@
     -webkit-box-align: center;
     -moz-box-align: center;
     box-align: center;
-    -webkit-box-flex: 1;
-    -moz-box-flex: 1;
-    box-flex: 1;    
     overflow: visible; /* show dropdowns */
-}
-
-.brackets-cardboard-nav {
-    
 }
 
 .brackets-cardboard-search {
@@ -35,19 +28,52 @@
     right: 25px; 
 }
 
-.brackets-cardboard-table > td:nth-child(0) {
-    width: 30%;
+td:nth-child(1) {
+    width: 20%;
 }
-    
+
+td:nth-child(2) {
+    width: 40%;
+}
+
+td:nth-child(3) {
+    width: 10%;
+}
+
+td:nth-child(4) {
+    width: 10%;
+}
+
+td:nth-child(5) {
+    width: 10%;
+}
+
+td:nth-child(6) {
+    width: 10%;
+    right: 0;
+}
+
+.brackets-cardboard-result-installed {
+    border-left-color: #78b2f2;
+    border-left-style: solid;
+    border-left-width: 4px;
+}
+
+.brackets-cardboard-result-update {
+    border-left-color: #e3b551;
+    border-left-style: solid;
+    border-left-width: 4px;
+}
+
 
 
 /* Toolbar icon */
-#brackets-cardboard-icon {
+.brackets-cardboard-icon {
     background-image: url(brackets-cardboard.svg);
     background-size: 24px 24px;
 }
 
-#brackets-cardboard-icon.active {
+.brackets-cardboard-icon.active {
     background-image: url(brackets-cardboard-open.svg);
     background-size: 24px 24px;
 }

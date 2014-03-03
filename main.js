@@ -58,11 +58,14 @@ define(function (require, exports, module) {
     AppInit.appReady(function () {
 
         // Panel
-//        var data = _.pick(testData, 'search');
+        Ui.listManagers(_.pick(testData, 'getAvailable'), '#brackets-cardboard-managers');
+        
         var data = { "results" : _.flatten(testData.search) };
+        data.results[0].installed = "installed";
+        data.results[2].installed = "update";
         console.log(data);
         Ui.updateResults(data, '.brackets-cardboard-table');
-        Ui.updateSearch(data, '#brackets-cardboard-managers');
+        
 
     });
 

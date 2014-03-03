@@ -39,16 +39,16 @@ define(function (require, exports, module) {
     // returns array of objects
     function search (query) {
         var result1 = new Result();
-            result1.id = query;
-            result1.manager = MANAGER;
-            result1.primary =  "Test nothing " + query;
-            result1.secondary = "Some descriptiong tat is really long and have spelling mistakes";
-            result1.link = "http://github.com/khornberg/brackets-nothing";
-            result1.data1 = "Updated 18 hours ago";
-            result1.data2 = "2 Forks";
-            result1.data3 = "4 Stars";
+        result1.id = query;
+        result1.manager = MANAGER;
+        result1.primary =  "Test nothing " + query;
+        result1.secondary = "Some descriptiong tat is really long and have spelling mistakesSome descriptiong tat is really long and have spelling mistakesSome descriptiong tat is really long and have spelling mistakes";
+        result1.link = "http://github.com/khornberg/brackets-nothing";
+        result1.data1 = "Updated 18 hours ago";
+        result1.data2 = "2 Forks";
+        result1.data3 = "<a href='" + result1.link + "'>README</a>";
             
-        var result2 = new Result(query + " nohting", MANAGER, "Primary name of result", "Secondary descriptoing :)", "http://github.com/khornberg/brackets-git", "Update yesterday", "500 forks", "1,200 Stars");
+        var result2 = new Result(query + " nohting", MANAGER, query + " nohting", "Secondary descriptoing :)", "http://github.com/khornberg/brackets-git", "Update yesterday", "2 forks", "1,2 Stars");
         
         return [result1, result2];
     }

@@ -16,7 +16,7 @@ define(function (require, exports, module) {
 
         Strings           = require("../strings"),
         COMMAND_ID        = "brackets-cardboard.cardboardShowPanel",
-        $icon             = $( "<a href='#' title='" + Strings.EXTENSION_NAME + "' id='brackets-cardboard-icon'></a>" ),
+        $icon             = $( "<a href='#' title='" + Strings.EXTENSION_NAME + "' class='brackets-cardboard-icon'></a>" ),
         panel             = null;
     
 
@@ -49,19 +49,18 @@ define(function (require, exports, module) {
     }).appendTo("#main-toolbar .buttons");
     
 
-    function updateSearch(data, selector) {
-        var template = require("text!../html/search.html"),
-            data2 = _.merge(data, Strings),
-            templateHtml = Mustache.render(template, data2);
+    function listManagers(data, selector) {
+        var template = require("text!../html/managers.html"),
+            templateData = _.merge(data, Strings),
+            templateHtml = Mustache.render(template, templateData);
 
         $(selector).html(templateHtml);
-//        $(selector).html(templateHtml);
-
     }
 
     function updateResults(data, selector) {
         var template = require("text!../html/results.html"),
-            templateHtml = Mustache.render(template, data);
+            templateData = _.merge(data, Strings),
+            templateHtml = Mustache.render(template, templateData);
 
         $(selector).html(templateHtml);
 
@@ -89,7 +88,7 @@ define(function (require, exports, module) {
     addPanel(Strings);
 
 
-    exports.updateSearch = updateSearch;
+    exports.listManagers = listManagers;
     exports.updateResults = updateResults;
     exports.cardboardShowPanel = cardboardShowPanel;
 });

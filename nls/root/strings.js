@@ -7,7 +7,7 @@ define({
     "EXTENSION" : "brackets-cardboard",
     "EXTENSION_NAME" : "Cardboard",
     "MENU_NAME" : "Packages and Dependencies",
-    "SHOW_INSTALLED" : "Installed",
+    "SHOW_INSTALLED" : "Show Installed",
     "REPORT_BUG" : "Report Bug",
     "SEARCH_PLACEHOLDER" : "Search",
     "SEARCH_ALL" : "All",
