@@ -4,8 +4,12 @@
 /*global define */
 
 define({
-    "EXTENSION_NAME" : "brackets-pdm",
+    "EXTENSION" : "brackets-cardboard",
+    "EXTENSION_NAME" : "Cardboard",
     "MENU_NAME" : "Packages and Dependencies",
+    "SHOW_INSTALLED" : "Installed",
     "REPORT_BUG" : "Report Bug",
-
+    "SEARCH_PLACEHOLDER" : "Search",
+    "SEARCH_ALL" : "All",
+    "INSTALL" : "Install",
 });

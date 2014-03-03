@@ -1,5 +1,5 @@
-    <a data-toggle="dropdown" href="#">Managers</a>
-    <ul class="dropdown-menu" role="menu">
+    <button type="button" class="btn btn-default dropdown dropdown-toggle" data-toggle="dropdown">{{ SEARCH_ALL }} <span class="caret"></span></button>
+    <ul class="dropdown-menu">
         {{#getAvailable}}
         <li>{{.}}</li>
         {{/getAvailable}}

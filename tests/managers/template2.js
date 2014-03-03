@@ -11,7 +11,8 @@ define(function (require, exports, module) {
 
     // Dependencies
 
-    var MANAGER = "Test2";
+    var Result            = require("modules/Result"),
+        MANAGER = "Test2";
 
     // install command for manager
     // returns status, error
@@ -37,18 +38,18 @@ define(function (require, exports, module) {
     // search command for manager
     // returns array of objects
     function search (query) {
-        var result1 = {
-            "name": "Test2 " + query + " 1",
-            "manager": MANAGER,
-            "url": "http://github.com/khornberg/brackets-pdm",
-            "readme": "http://github.com/khornberg/brackets-pdm/blob/master/README.md"
-        },
-            result2 = {
-            "name": "Test2 " + query + " 2",
-            "manager": MANAGER,
-            "url": "http://github.com/khornberg/brackets-git",
-            "readme": "http://github.com/khornberg/brackets-git/blob/master/README.md"
-        };
+        var result1 = new Result();
+            result1.id = query;
+            result1.manager = MANAGER;
+            result1.primary =  "Test nothing " + query;
+            result1.secondary = "Some descriptiong tat is really long and have spelling mistakes";
+            result1.link = "http://github.com/khornberg/brackets-nothing";
+            result1.data1 = "Updated 18 hours ago";
+            result1.data2 = "2 Forks";
+            result1.data3 = "4 Stars";
+            
+        var result2 = new Result(query + " nohting", MANAGER, "Primary name of result", "Secondary descriptoing :)", "http://github.com/khornberg/brackets-git", "Update yesterday", "500 forks", "1,200 Stars");
+        
         return [result1, result2];
     }
 

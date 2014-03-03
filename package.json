@@ -1,8 +1,8 @@
 {
-    "name": "brackets-pdm",
-    "title": "Package/Dependency Manager",
+    "name": "brackets-cardboard",
+    "title": "Cardboard",
     "description": "Manage packages/dependencies for your project.",
-    "homepage": "https://github.com/khornberg/brackets-pdm",
+    "homepage": "https://github.com/khornberg/brakets-cardboard",
     "version": "0.0.1",
     "author": "Kyle Hornberg <kyle.hornberg@gmail.com> (http://khornberg.github.io) ",
     "license": "Apache 2.0",

@@ -1,23 +1,16 @@
-<div id="brackets-pdm" class="brakets-pdm bottom-panel vert-resizable top-resizer no-focus">
-    <div class="toolbar simple-toolbar-layout">
-
-        <div class="pdm-title">{{ EXTENSION_NAME }}</div>
-        <div class="pdm-search">
-            <form class="form-inline">
-                <div class="form-group">
-                    <input type="text" placeholder="{{ SEARCH_PLACEHOLDER }}">
-                </div>
-                <div class="form-group">
-                    <div class="pdm-managers dropdown">
-
-                    </div>
-                </div>
-            </form>
-
+<div id="brackets-cardboard" class="brakets-cardboard bottom-panel vert-resizable top-resizer no-focus">
+    <div class="toolbar brackets-cardboard-toolbar-layout">
+        <button class="btn btn-default">{{ SHOW_INSTALLED }}</button>
+        <div class="form-inline brackets-cardboard-search">
+                <input type="text" placeholder="{{ SEARCH_PLACEHOLDER }}">
         </div>
-        <button class="pdm-bug">{{ REPORT_BUG }}</button>
-        <a href="#" class="close">&times;</a>
+        <div class="btn-group" data-dropdown="dropdown" id="brackets-cardboard-managers">
+<!--        search-->
+        </div>
+        
+        <button class="btn btn-default brackets-cardboard-bug"><i class="fa fa-bug"></i> {{ REPORT_BUG }}</button>
+        <a href="#" class="close brackets-cardboard-close">&times;</a>
     </div>
 
-    <div class="table-container resizable-content pdm-table"></div>
+    <div class="table-container resizable-content brackets-cardboard-table"></div>
 </div>

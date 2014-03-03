@@ -1,15 +1,17 @@
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, regexp: true, indent: 4, maxerr: 50 */
 /*global define, $, brackets, Mustache, _ */
 
-/** brackets-pdm (Brackets Package/Dependency Manager) Extension
+/** 
+    brackets-cardboard Brackets Cardboard Extension
     Manage packages/dependencies for your project.
     Copyright 2014 Kyle Hornberg
     LICENSE Apache 2.0
 */
+
 define(function (require, exports, module) {
     'use strict';
 
-    console.log("INITIALIZING brackets-pdm EXTENSION");
+    console.log("INITIALIZING brackets-cardboard EXTENSION");
 
     // Modules
     var CommandManager    = brackets.getModule("command/CommandManager"),
@@ -24,10 +26,12 @@ define(function (require, exports, module) {
         managerDirectory  = moduleDirectory + "modules/managers",
 
         Interface         = require("modules/Interface"),
-        Ui                = require("modules/Ui");
+        Ui                = require("modules/Ui"),
+        Result            = require("modules/Result");
 
-
-    // Tests in liue of unittest not working-----------------------
+    
+    
+    // Tests in lieu of unittest not working-----------------------
     var testData = {};
     testData.getManagers  = Interface.getManagers();
     testData.getAvailable = Interface.getAvailable();
@@ -46,17 +50,19 @@ define(function (require, exports, module) {
     // --------------------------------------------------------------
 
     // Load CSS
-    ExtensionUtils.loadStyleSheet(module, "less/brackets-pdm.less");
+    ExtensionUtils.loadStyleSheet(module, "css/brackets-cardboard.css");
+    ExtensionUtils.loadStyleSheet(module, "css/font-awesome.min.css");
 
 
 
     AppInit.appReady(function () {
 
         // Panel
-        var data = _.pick(testData, 'getAvailable');
+//        var data = _.pick(testData, 'search');
+        var data = { "results" : _.flatten(testData.search) };
         console.log(data);
-        Ui.updateResults(data, '.pdm-table');
-        Ui.updateSearch(data, '.pdm-managers');
+        Ui.updateResults(data, '.brackets-cardboard-table');
+        Ui.updateSearch(data, '#brackets-cardboard-managers');
 
     });
 

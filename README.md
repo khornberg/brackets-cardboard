@@ -1,4 +1,4 @@
-# Brackets Package/Dependency Manager
+# Brackets Cardboard
 
 Manage your project's packages or dependencies (depending on the tool) from within Brackets.
 
@@ -21,6 +21,11 @@ Initially this has the ability to work with npm and bower (seemed like natural c
 * NPM manager
 * Localization
 * Preferences
+* Load new managers dynamically
+
+## Contributing
+
+Yes, please. See the TODO.
 
 
 ## Structure
@@ -35,23 +40,28 @@ In other words, you can add "classes" that use the "interface". The rest of the 
 `strings.js` localization
 `domain.js` ?
 `html/` html templates
-`less/` less/css and icons
+`css/` css and icons for managers
+`fonts/` fonts
 `nls/` localization strings
 `tests/` unit tests
 
-brackets-pdm loads all the managers in the `brackets-pdm/managers` extension folder.
 `managers/bowerManager.js` manager for bower
 `managers/npmManager.js` manager for npm
 
 
 ### Load a new manager
+
+** Current way to load a new manager is to edit the `modules/Interface.js` file. To have it included with the extension send a PR.
+
+** I want to get to this. Currently this doesn't work.**
+
 Open the `managers` folder in this extension fodler and add the file. The easist way to get to the folder is to select `Help->Show Extensions Folder`.
 
-**(FOR NOW) Reload brackets with extensions after adding it.**
+brackets-cardboard loads all the managers in the `modules/managers` extension folder.
 
 ## Developing a Manager
 
-If you know of a manager you want access to, you can follow the template in `tests/managers/template.js`. That file (for now) serves as the documentation.
+If you know of a manager you want access to, you can follow the template in `tests/managers/template.js` or one in the `modules/managers` folder. Those files (for now) serves as the documentation.
 
 ## Interface Documentation
 (TODO)

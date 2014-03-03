@@ -2,9 +2,9 @@
 /*global define, $, brackets */
 
 /*
-    interface.js
+    Interface.js
     Provides the abstract interface for all managers.
- */
+*/
 
 define(function (require, exports, module) {
     'use strict';
@@ -12,6 +12,7 @@ define(function (require, exports, module) {
     // Dependencies
     var ExtensionUtils      = brackets.getModule("utils/ExtensionUtils"),
         moduleDirectory     = ExtensionUtils.getModulePath(module),
+//        _                 = brackets.getModule("thirdparty/lodash"),
 
         //Tests directory
         managerDirectory    = moduleDirectory + "../tests/managers/",
@@ -123,7 +124,7 @@ define(function (require, exports, module) {
         return available;
     }
 
-    // get configuration for manager so pdm knows where to look for installed pagages
+    // get configuration for manager so cardboard knows where to look for installed pagages
     // returns configuration object (remember to JSON.parse if returning json)
     function getConfig (managerModule) {
         var config = {};

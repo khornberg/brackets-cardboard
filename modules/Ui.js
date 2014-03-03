@@ -2,8 +2,8 @@
 /*global define, $, brackets, Mustache */
 
 /*
-    ui.js
-    Managers the UI
+    Ui.js
+    Manages the UI
  */
 
 define(function (require, exports, module) {
@@ -12,17 +12,19 @@ define(function (require, exports, module) {
     var CommandManager    = brackets.getModule("command/CommandManager"),
         Menus             = brackets.getModule("command/Menus"),
         PanelManager      = brackets.getModule("view/PanelManager"),
+        _                 = brackets.getModule("thirdparty/lodash"),
 
         Strings           = require("../strings"),
-        COMMAND_ID        = "backets-pdm.pdmShowPanel",
-        $icon             = $( "<a href='#' title='" + Strings.EXTENSION_NAME + "' id='brackets-pdm-icon'></a>" ),
+        COMMAND_ID        = "brackets-cardboard.cardboardShowPanel",
+        $icon             = $( "<a href='#' title='" + Strings.EXTENSION_NAME + "' id='brackets-cardboard-icon'></a>" ),
         panel             = null;
+    
 
     /**
-     * Show the pdm panel
+     * Show the cardboard panel
      */
-    function pdmShowPanel() {
-        console.log("Executing Command pdmShowPanel");
+    function cardboardShowPanel() {
+        console.log("Executing Command cardboardShowPanel");
         if(panel.isVisible()) {
             panel.hide();
             $icon.removeClass("active");
@@ -37,7 +39,7 @@ define(function (require, exports, module) {
 
     // View menu
     // TODO remove?
-    CommandManager.register(Strings.MENU_NAME, COMMAND_ID, pdmShowPanel);
+    CommandManager.register(Strings.MENU_NAME, COMMAND_ID, cardboardShowPanel);
     var menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
     menu.addMenuItem(COMMAND_ID);
 
@@ -45,11 +47,12 @@ define(function (require, exports, module) {
     $icon.click(function () {
         CommandManager.execute(COMMAND_ID);
     }).appendTo("#main-toolbar .buttons");
-
+    
 
     function updateSearch(data, selector) {
         var template = require("text!../html/search.html"),
-            templateHtml = Mustache.render(template, data);
+            data2 = _.merge(data, Strings),
+            templateHtml = Mustache.render(template, data2);
 
         $(selector).html(templateHtml);
 //        $(selector).html(templateHtml);
@@ -69,6 +72,18 @@ define(function (require, exports, module) {
         var panelHtml = Mustache.render(template, data);
 
         panel = PanelManager.createBottomPanel(COMMAND_ID, $(panelHtml), 200);
+        
+        
+        // Listeners for panel
+        var $cardboardPanel = $("#brackets-cardboard");
+        
+        $cardboardPanel
+            .on( 'click', '.close', function () {
+                console.log('close');
+                panel.hide();
+                $icon.removeClass("active");
+                CommandManager.get(COMMAND_ID).setChecked(false);
+            });
     }
 
     addPanel(Strings);
@@ -76,5 +91,5 @@ define(function (require, exports, module) {
 
     exports.updateSearch = updateSearch;
     exports.updateResults = updateResults;
-    exports.pdmShowPanel = pdmShowPanel;
+    exports.cardboardShowPanel = cardboardShowPanel;
 });
