@@ -1,6 +1,6 @@
 <div id="brackets-cardboard" class="brakets-cardboard bottom-panel vert-resizable top-resizer no-focus">
     <div class="toolbar brackets-cardboard-toolbar-layout">
-        <button class="btn btn-default">{{ SHOW_INSTALLED }}</button>
+        <button id="brackets-cardboard-show" class="btn btn-default">{{ SHOW_INSTALLED }}</button>
         <div class="form-inline brackets-cardboard-search">
                 <input type="text" placeholder="{{ SEARCH_PLACEHOLDER }}">
         </div>
@@ -8,7 +8,7 @@
 <!--        search-->
         </div>
         
-        <button class="btn btn-default brackets-cardboard-bug"><i class="fa fa-bug"></i> {{ REPORT_BUG }}</button>
+        <a class="btn btn-default brackets-cardboard-bug" href="https://github.com/khornberg/brackets-cardboard/issues"><i class="fa fa-bug"></i> {{ REPORT_BUG }}</a>
         <a href="#" class="close brackets-cardboard-close">&times;</a>
     </div>
 
