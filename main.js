@@ -29,12 +29,10 @@ define(function (require, exports, module) {
         Interface         = require("modules/Interface"),
 
         Strings           = require("strings"),
-        COMMAND_ID        = "brackets-cardboard.cardboardShowPanel",
+        COMMAND_ID        = "brackets-cardboard.cardboardTogglePanel",
         $icon             = $( "<a href='#' title='" + Strings.EXTENSION_NAME + "' class='brackets-cardboard-icon'></a>" ),
         panel             = null;
 
-    
-    
 // Tests in lieu of unittest not working-----------------------
     var testData = {};
     testData.getManagers  = Interface.getManagers();
@@ -48,9 +46,7 @@ define(function (require, exports, module) {
     testData.getConfig    = Interface.getConfig(testData.getManagers[1]);
 //    testData.openReadme  = Interface.openReadme(testData.getManagers[0], "PACKage");
 //    testData.openUrl     = Interface.openUrl(testData.getManagers[0], "pakage");
-
     console.log(testData);
-
 // --------------------------------------------------------------
 
     // Load CSS
@@ -62,9 +58,9 @@ define(function (require, exports, module) {
     /**
      * Show the cardboard panel
      */
-    function cardboardShowPanel() {
-        console.log("Executing Command cardboardShowPanel");
-        if(panel.isVisible()) {
+    function cardboardTogglePanel(toggle) {
+        console.log("Executing Command cardboardTogglePanel");
+        if(panel.isVisible() || toggle) {
             panel.hide();
             $icon.removeClass("active");
             CommandManager.get(COMMAND_ID).setChecked(false);
@@ -75,13 +71,6 @@ define(function (require, exports, module) {
             CommandManager.get(COMMAND_ID).setChecked(true);
         }
     }
-
-    // View menu
-    // TODO remove?
-    CommandManager.register(Strings.MENU_NAME, COMMAND_ID, cardboardShowPanel);
-    var menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
-    menu.addMenuItem(COMMAND_ID);
-
 
     function listManagers(data, selector) {
         var template = require("text!html/managers.html"),
@@ -97,6 +86,8 @@ define(function (require, exports, module) {
             templateHtml = Mustache.render(template, templateData);
 
         $(selector).html(templateHtml);
+        $showButton = $('#brackets-cardboard-show');
+        $showButton.html() = Strings.HIDE_INSTALLED;
     }
 
     function addPanel(data) {
@@ -111,21 +102,24 @@ define(function (require, exports, module) {
         $cardboardPanel
             .on( "click", ".close", function () {
                 console.log("close");
-                panel.hide();
-                $icon.removeClass("active");
-                CommandManager.get(COMMAND_ID).setChecked(false);
+                cardboardTogglePanel(false);
             })
             .on( "click", "#brackets-cardboard-show", function () {
                 console.log("show");
-                var $results = $('tr:not(.brackets-cardboard-result-installed):not(.brackets-cardboard-result-update)', $('.brackets-cardboard-table tbody')),
-                    $show = $('#brackets-cardboard-show');
+                var $results = $('tr:not([class=""])', $('.brackets-cardboard-table tbody')),
+                // var $results = $('tr:not(.brackets-cardboard-result-installed):not(.brackets-cardboard-result-update)', $('.brackets-cardboard-table tbody')),
+                    $showButton = $('#brackets-cardboard-show');
 
+                // if results are present (eg. a search performed)
                 $results.toggle();
+                // else show only the installed packages
+                // var installed = Interface.getInstalled();
+                // updateResults(installed, '.brackets-cardboard-table');
 
-                if ($show.html === Strings.SHOW_ALL) {
+                if ($showButton.html() === Strings.HIDE_INSTALLED) {
                     $(this).html(Strings.SHOW_INSTALLED);
                 } else {
-                    $(this).html(Strings.SHOW_ALL);
+                    $(this).html(Strings.HIDE_INSTALLED);
                 }
             })
             .on( "keydown", ".brackets-cardboard-search input", function (event) {
@@ -164,25 +158,33 @@ define(function (require, exports, module) {
             })
         ;
     }
-    addPanel(Strings);
+
+    function init () {
+        addPanel(Strings);
+        listManagers(_.pick(testData, 'getAvailable'), '#brackets-cardboard-managers');
+    }
 
     // Listener for toolbar icon
     $icon.click(function () {
         CommandManager.execute(COMMAND_ID);
     }).appendTo("#main-toolbar .buttons");
 
+    // View menu
+    // TODO remove?
+    CommandManager.register(Strings.MENU_NAME, COMMAND_ID, cardboardTogglePanel);
+    var menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
+    menu.addMenuItem(COMMAND_ID);
+
 
     AppInit.appReady(function () {
+        init();
 
-        // Panel
-        listManagers(_.pick(testData, 'getAvailable'), '#brackets-cardboard-managers');
 
         // test search data display
         var data = { "results" : _.flatten(testData.search) };
         data.results[0].installed = "installed";
         data.results[2].installed = "update";
         console.log(data);
-
         updateResults(data, '.brackets-cardboard-table');
         
 

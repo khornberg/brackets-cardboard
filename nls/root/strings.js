@@ -8,10 +8,9 @@ define({
     "EXTENSION_NAME" : "Cardboard",
     "MENU_NAME" : "Packages and Dependencies",
     "SHOW_INSTALLED" : "Show Installed",
-    "SHOW_ALL" : "Show All",
+    "HIDE_INSTALLED" : "Hide Installed",
     "REPORT_BUG" : "Report Bug",
     "SEARCH_PLACEHOLDER" : "Search",
-    "SEARCH_ALL" : "All",
-    "MANAGERS" : "Managers",
+    "SEARCH_ALL" : "All Managers",
     "INSTALL" : "Install",
 });
