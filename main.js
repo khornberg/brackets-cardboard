@@ -83,11 +83,11 @@ define(function (require, exports, module) {
     function updateResults(data, selector) {
         var template = require("text!html/results.html"),
             templateData = _.merge(data, Strings),
-            templateHtml = Mustache.render(template, templateData);
+            templateHtml = Mustache.render(template, templateData),
+            $showButton = $('#brackets-cardboard-show');;
 
         $(selector).html(templateHtml);
-        $showButton = $('#brackets-cardboard-show');
-        $showButton.html() = Strings.HIDE_INSTALLED;
+        $showButton.html(Strings.HIDE_INSTALLED);
     }
 
     function addPanel(data) {
@@ -179,11 +179,10 @@ define(function (require, exports, module) {
     AppInit.appReady(function () {
         init();
 
-
         // test search data display
-        var data = { "results" : _.flatten(testData.search) };
+        var data = { "results" : _.flatten(testData.list) };
         data.results[0].installed = "installed";
-        data.results[2].installed = "update";
+        // data.results[2].installed = "update";
         console.log(data);
         updateResults(data, '.brackets-cardboard-table');
         

@@ -56,12 +56,16 @@ define(function (require, exports, module) {
     // get installed packages or dependencies
     // returns array of objects
     function list () {
-        var result1 = {
-            "name": "Test2 package 1",
-            "manager": MANAGER,
-            "url": "http://github.com/khornberg/brackets-pdm",
-            "readme": "http://github.com/khornberg/brackets-pdm/blob/master/README.md"
-        };
+        var result1 = new Result(
+            "phpDOC",
+            MANAGER,
+            "Test2 phpDOC",
+            "",
+            "http://github.com/khornberg/phpDOC",
+            "",
+            "",
+            "<a href='http://github.com/khornberg/brackets-pdm/blob/master/README.md'>README</a>"
+            );
         return [result1];
     }
 

@@ -55,12 +55,13 @@ define(function (require, exports, module) {
     // get installed packages or dependencies
     // returns array of objects
     function list () {
-        var result1 = {
-            "name": "Test package 1",
-            "manager": MANAGER,
-            "url": "http://github.com/khornberg/brackets-pdm",
-            "readme": "http://github.com/khornberg/brackets-pdm/blob/master/README.md"
-        };
+        var result1 = new Result();
+        result1.id = "brackets-pdm";
+        result1.manager = MANAGER;
+        result1.primary ="Brackets PDM";
+        result1.link = "http://github.com/khornberg/brackets-pdm";
+        result1.data1 = "<a href='http://github.com/khornberg/brackets-pdm/blob/master/README.md'>README</a>";
+
         return [result1];
     }
 
