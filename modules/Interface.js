@@ -29,32 +29,32 @@ define(function (require, exports, module) {
     // name package name
     // returns result
     function install (managerModule, packageName) {
-        var status = {};
+        var deferred = $.Deferred();
 
         require([managerDirectory + managerModule], function (manager) {
-            status[managerModule] = manager.install(packageName);
+            deferred.resolve( manager.install(packageName) );
         });
-        return status;
+        return deferred.promise();
     }
 
     // uninstall command for manager
     function uninstall (managerModule, packageName) {
-        var status = {};
+        var deferred = $.Deferred();
 
         require([managerDirectory + managerModule], function (manager) {
-            status[managerModule] =  manager.uninstall(packageName);
+            deferred.resolve( manager.uninstall(packageName) );
         });
-        return status;
+        return deferred.promise();
     }
 
     // update command for manager
     function update (managerModule, packageName) {
-        var status = {};
+        var deferred = $.Deferred();
 
         require([managerDirectory + managerModule], function (manager) {
-            status[managerModule] =  manager.update(packageName);
+            deferred.resolve( manager.update(packageName) );
         });
-        return status;
+        return deferred.promise();
     }
 
     // search command for manager
@@ -66,22 +66,31 @@ define(function (require, exports, module) {
         @returns Array of search result objects
     */
     function search () {
-        var searchModule = (arguments.length > 1) ? arguments[0] : undefined,
+        var searchManager = (arguments.length > 1) ? arguments[0] : undefined,
             query = (arguments.length > 1) ? arguments[1]: arguments[0],
             results = [];
 
-        if (searchModule !== undefined) {
-            require([managerDirectory + searchModule], function (manager) {
-                results.push(manager.search(query));
+        // search using a single manager
+        if (searchManager !== undefined) {
+            var deferred = $.Deferred();
+
+            require([managerDirectory + searchManager], function (manager) {
+                deferred.resolve(manager.search(query));
             });
+            results.push(deferred.promise());
+
             return results;
         }
 
         managerModules.forEach(function (managerModule) {
+            var deferred = $.Deferred();
+
             require([managerDirectory + managerModule], function (manager) {
-                results.push(manager.search(query));
+                deferred.resolve(manager.search(query));
             });
+            results.push(deferred.promise());
         });
+
 
         return results;
     }
@@ -91,14 +100,18 @@ define(function (require, exports, module) {
         var results = [];
 
         managerModules.forEach(function (managerModule) {
+            var deferred = $.Deferred();
+
             require([managerDirectory + managerModule], function (manager) {
                 if (manager === managerName) {
-                    results.push(manager.list());
+                    deferred.resolve(manager.list());
+                    results.push(deferred.promise());
                     return results;
                 }
 
-                results.push(manager.list());
+                deferred.resolve(manager.list());
             });
+            results.push(deferred.promise());
         });
         return results;
     }
@@ -108,6 +121,7 @@ define(function (require, exports, module) {
 
 
     // get manager modules
+    // currently a static list as an array
     function getManagers () {
         return managerModules;
     }
@@ -117,9 +131,12 @@ define(function (require, exports, module) {
         var available = [];
 
         managerModules.forEach(function (managerModule) {
+            var deferred = $.Deferred();
+
             require([managerDirectory + managerModule], function (manager) {
-                available.push(manager.isAvailable());
+                 deferred.resolve(manager.isAvailable());
             });
+            available.push(deferred.promise());
         });
         return available;
     }
@@ -127,12 +144,12 @@ define(function (require, exports, module) {
     // get configuration for manager so cardboard knows where to look for installed pagages
     // returns configuration object (remember to JSON.parse if returning json)
     function getConfig (managerModule) {
-        var config = {};
+        var deferred = $.Deferred();
 
         require([managerDirectory + managerModule], function (manager) {
-            config[managerModule] =  manager.getConfig();
+            deferred.resolve( manager.getConfig() );
         });
-        return config;
+        return deferred.promise();
     }
 
     // opens readme in default browser
@@ -164,6 +181,4 @@ define(function (require, exports, module) {
     exports.getConfig       = getConfig;
     exports.openReadme      = openReadme;
     exports.openUrl         = openUrl;
-
-
 });
