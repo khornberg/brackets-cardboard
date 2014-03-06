@@ -1,7 +1,7 @@
     <button type="button" class="btn btn-default dropdown dropdown-toggle" data-toggle="dropdown">{{ SEARCH_ALL }} <span class="caret"></span></button>
     <ul class="dropdown-menu">
          <li class="brackets-cardboard-manager"><a href="#">{{ SEARCH_ALL }}</a></li>
-        {{#getAvailable}}
-        <li class="brackets-cardboard-manager"><a href="#">{{.}}</a></li>
-        {{/getAvailable}}
+        {{#available}}
+        <li class="brackets-cardboard-manager" data-id="{{manager}}"><a href="#">{{displayAs}}</a></li>
+        {{/available}}
     </ul>

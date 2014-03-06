@@ -59,8 +59,14 @@ td:nth-child(6) {
     border-left-width: 4px;
 }
 
-.brackets-cardboard-result-update {
+.brackets-cardboard-result-updated {
     border-left-color: #e3b551;
+    border-left-style: solid;
+    border-left-width: 4px;
+}
+
+.brackets-cardboard-result-error {
+    border-left-color: #f74687;
     border-left-style: solid;
     border-left-width: 4px;
 }
@@ -77,4 +83,3 @@ td:nth-child(6) {
     background-image: url(brackets-cardboard-open.svg);
     background-size: 24px 24px;
 }
-    

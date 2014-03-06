@@ -46,8 +46,8 @@ define(function (require, exports, module) {
     wait(Interface.update(m[0], "package ..."), "update");
     waitForIt(Interface.search(m[1], "PKG"), "seach single");
     waitForIt(Interface.search("PKG"), "search all");
-    waitForIt(Interface.list(m[0]), "list single");
-    waitForIt(Interface.list(), "list all");
+    waitForIt(Interface.getInstalled(m[0]), "getInstalled single");
+    waitForIt(Interface.getInstalled(), "getInstalled all");
 //    testData.openReadme  = Interface.openReadme(testData.getManagers[0], "PACKage");
 //    testData.openUrl     = Interface.openUrl(testData.getManagers[0], "pakage");
 
@@ -87,118 +87,180 @@ define(function (require, exports, module) {
         }
     }
 
-    function listManagers(data, selector) {
-        var template = require("text!html/managers.html"),
-            templateData = _.merge({"getAvailable" : data }, Strings),
-            templateHtml = Mustache.render(template, templateData);
-console.log(templateData);
-        $(selector).html(templateHtml);
+    /**
+     * Adds available managers to the search list
+     */
+    function listManagers() {
+        $.when.apply($, Interface.getAvailable()).then(function () {
+            var args = arguments,
+                managers = [];
+
+            for (var i = args.length - 1; i >= 0; i--) {
+                managers.push(args[i]);
+            };
+
+            var template = require("text!html/managers.html"),
+                templateData = _.merge({"available" : managers }, Strings),
+                templateHtml = Mustache.render(template, templateData);
+
+            $('#brackets-cardboard-managers').html(templateHtml);
+        });
     }
 
-    function updateResults(data, selector) {
+    /**
+     * Updates the results table on the cardboard panel
+     * @param  {Object} results     Object with key "results" of array of Results
+     * @param  {String} selector    jQuery selector of DOM object to update
+     */
+    function updateResults(results, selector) {
         var template = require("text!html/results.html"),
-            templateData = _.merge(data, Strings),
-            templateHtml = Mustache.render(template, templateData),
+            templateInstallButton = require("text!html/installButton.html"),
+            templateInstalledButtons = require("text!html/installedButtons.html"),
+            templateData = _.merge(results, Strings),
+            templatePartials = { installButton : templateInstallButton, installedButtons : templateInstalledButtons},
+            templateHtml = Mustache.render(template, templateData, templatePartials),
             $showButton = $('#brackets-cardboard-show');;
 
         $(selector).html(templateHtml);
         $showButton.html(Strings.HIDE_INSTALLED);
     }
 
-    function addPanel(data) {
+    /**
+     * Updates a single result on the cardboard results table
+     * @param  {Status} status   Status object
+     */
+    function updateResult(status) {
+        var template,
+            templateData = Strings,
+            templateHtml,
+            $result = $("tr[data-id='" + status.id + "']");
+
+            switch(status.status) {
+                case "installed":
+                    template = require("text!html/installedButtons.html");
+                    $result.removeClass();
+                    $result.addClass('brackets-cardboard-result-' + status.status);
+                    break;
+                case "updated":
+                    template = require("text!html/installedButtons.html");
+                    $result.removeClass();
+                    $result.addClass('brackets-cardboard-result-' + status.status);
+                    break;
+                case "uninstalled":
+                    template = require("text!html/installButton.html");
+                    $result.removeClass();
+                    break;
+                default:
+                    template = require("text!html/installButton.html");
+                    $result.removeClass();
+            }
+            templateHtml = Mustache.render(template, templateData);
+
+        // Add button(s)
+        $('td:last-child', $result).html(templateHtml);
+    }
+
+    /**
+     * Adds the cardboard panel to brackets
+     */
+    function addPanel() {
         var template = require("text!html/panel.html");
-        var panelHtml = Mustache.render(template, data);
+        var panelHtml = Mustache.render(template, Strings);
 
         panel = PanelManager.createBottomPanel(COMMAND_ID, $(panelHtml), 200);
 
-        // Listeners for panel
+        // Listeners on the panel
         var $cardboardPanel = $("#brackets-cardboard");
 
         $cardboardPanel
             .on( "click", ".close", function () {
-                console.log("close");
                 cardboardTogglePanel(false);
             })
             .on( "click", "#brackets-cardboard-show", function () {
-                console.log("show");
-                var $results = $('tr:not([class=""])', $('.brackets-cardboard-table tbody')),
-                // var $results = $('tr:not(.brackets-cardboard-result-installed):not(.brackets-cardboard-result-update)', $('.brackets-cardboard-table tbody')),
-                    $showButton = $('#brackets-cardboard-show');
+                var $results = $('tr:not([class=""])', $(".brackets-cardboard-table tbody")),
+                    $showButton = $("#brackets-cardboard-show"),
+                    RESULTS = ($results.length > 0) ? true : false;
 
+                // results are present (eg. a search performed)
+                if (RESULTS) {
+                    $results.toggle();
+                    // toggle button
+                    if ($showButton.html() === Strings.HIDE_INSTALLED) {
+                        $(this).html(Strings.SHOW_INSTALLED);
+                    } else {
+                        $(this).html(Strings.HIDE_INSTALLED);
+                    }
+                } else { // show only the installed packages
+                    $.when.apply($, Interface.getInstalled()).then( function () {
+                        var args = arguments,
+                            results = { "results" : _.flatten(args) };
 
-// test search data display
-        var data = { "results" : _.flatten(testData.list) };
-        data.results[0].installed = "installed";
-        // data.results[2].installed = "update";
-        updateResults(data, '.brackets-cardboard-table');
-
-                // if results are present (eg. a search performed)
-                // $results.toggle();
-                // else show only the installed packages
-                // var installed = Interface.getInstalled();
-                // updateResults(installed, '.brackets-cardboard-table');
-
-                if ($showButton.html() === Strings.HIDE_INSTALLED) {
-                    $(this).html(Strings.SHOW_INSTALLED);
-                } else {
-                    $(this).html(Strings.HIDE_INSTALLED);
+                        updateResults(results, ".brackets-cardboard-table");
+                    });
                 }
             })
             .on( "keydown", ".brackets-cardboard-search input", function (event) {
                 if(event.which === 13) {
                     var query = $(this).val(),
-                        manager = $('#brackets-cardboard-managers .dropdown').text();
-                    console.log("search " + query + " manager " + manager);
+                        manager = $("#brackets-cardboard-managers .dropdown").attr("data-id");
+
                     if (manager === Strings.SEARCH_ALL) {
-                        Interface.search(query);
+                        $.when.apply($, Interface.search(query)).then( function () {
+                            var args = arguments,
+                                results = { "results" : _.flatten(args) };
+
+                            updateResults(results, "brackets-cardboard-table");
+                        });
                     } else {
-                        Interface.search(manager, query);
+                        $.when.apply($, Interface.search(manager, query)).then( function () {
+                            var args = arguments,
+                                results = { "results" : _.flatten(args) };
+
+                            updateResults(results, ".brackets-cardboard-table");
+                        });
                     }
                 }
             })
             .on( "click", ".brackets-cardboard-manager", function () {
-                console.log($(this).text());
-                $(this).parent().prev().html($(this).text() + ' <span class="caret"></span>');
+                // Changes the manager dropdown text and makes it look like a select box
+                var manager = $(this).attr("data-id"),
+                    text =  $(this).text();
+
+                // Change text
+                $(this).parent().prev().html(text + ' <span class="caret"></span>');
+                // Change data-id
+                $(this).parent().prev().attr('data-id', manager);
             })
             .on( "click", ".brackets-cardboard-install", function () {
                 var id = $(this).parents("tr").attr("data-id"),
                     manager = $(this).parents("tr").attr("data-manager");
-                console.log("instal " + id + " manager " + manager);
-                $.when( Interface.install(manager, id) ).then (
-                    function (s) { console.log(s);}
-                    );
+
+                $.when( Interface.install(manager, id) ).then ( function (status) {
+                    updateResult(status);
+                });
             })
             .on( "click", ".brackets-cardboard-update", function () {
                 var id = $(this).parents("tr").attr("data-id"),
                     manager = $(this).parents("tr").attr("data-manager");
-                console.log("update " + id + " manager " + manager);
-                $.when( Interface.update(manager, id) ).then (
-                    function (s) { console.log(s);}
-                    );
 
+                $.when( Interface.update(manager, id) ).then (function (status) {
+                    updateResult(status);
+                });
             })
             .on( "click", ".brackets-cardboard-uninstall", function () {
                 var id = $(this).parents("tr").attr("data-id"),
                     manager = $(this).parents("tr").attr("data-manager");
-                console.log("uninstall " + id + " manager " + manager);
-                $.when( Interface.uninstall(manager, id) ).then (
-                    function (s) { console.log(s);}
-                    );
+
+                $.when( Interface.uninstall(manager, id) ).then (function (status) {
+                    updateResult(status);
+                });
             })
         ;
     }
 
     function init () {
-        addPanel(Strings);
-        $.when.apply($, testData.getAvailable).then(function () {
-            var a = arguments,
-                e = [];
-            for (var i = a.length - 1; i >= 0; i--) {
-                e.push(a[i]);
-            };
-            listManagers(e, '#brackets-cardboard-managers');
-        });
-
+        addPanel();
+        listManagers();
     }
 
     // Listener for toolbar icon
@@ -212,10 +274,8 @@ console.log(templateData);
     var menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
     menu.addMenuItem(COMMAND_ID);
 
-
     AppInit.appReady(function () {
         init();
-
     });
 
 });

@@ -9,14 +9,11 @@
             <td>{{& data3}}</td>
             <td>
                 {{^installed}}
-                <button class="btn btn-default brackets-cardboard-install">{{ INSTALL }}</button>
+                    {{> installButton}}
                 {{/installed}}
                  
                 {{#installed}}
-                <div class="btn-group">
-                    <button class="btn btn-default brackets-cardboard-update"><span class="fa fa-refresh"></span></button>
-                    <button class="btn btn-default brackets-cardboard-uninstall"><span class="fa fa-trash-o"></span></button>     
-                </div>
+                    {{> installedButtons}}
                 {{/installed}}
                 
             </td>
