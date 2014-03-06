@@ -83,11 +83,12 @@ define(function (require, exports, module) {
     /**
      * Searches one or more managers for a package
      * @abstract
-     * @param  {String} searchManager Manager name as defined in the `managerModules` array
+     * @param  {String} searchManager Manager name as defined in the `managerModules` array. Optional
      * @param  {String} query         Search query
      * @return {Array}                Deferred* Search result objects
      */
     function search () {
+        // search (searchManager, query)
         var searchManager = (arguments.length > 1) ? arguments[0] : undefined,
             query = (arguments.length > 1) ? arguments[1]: arguments[0],
             results = [];
@@ -119,22 +120,29 @@ define(function (require, exports, module) {
     /**
      * List installed packages/dependencies
      * @abstract
-     * @param  {String} managerName Manager name as defined in the `managerModules` array
+     * @param  {String} managerName Manager name as defined in the `managerModules` array. Optional.
      * @return {Array}              Deferred* Array of Result objects
      */
-    function list (managerName) {
-        var results = [];
+    function list () {
+        // list (managerName)
+        var managerName = (arguments.length === 1) ? arguments[0] : undefined,
+            results = [];
+
+        if (managerName !== undefined) {
+            var deferred = $.Deferred();
+
+            require([managerDirectory + managerName], function (manager) {
+                deferred.resolve(manager.list());
+            });
+            results.push(deferred.promise());
+
+            return results;
+        }
 
         managerModules.forEach(function (managerModule) {
             var deferred = $.Deferred();
 
             require([managerDirectory + managerModule], function (manager) {
-                if (manager === managerName) {
-                    deferred.resolve(manager.list());
-                    results.push(deferred.promise());
-                    return results;
-                }
-
                 deferred.resolve(manager.list());
             });
             results.push(deferred.promise());
