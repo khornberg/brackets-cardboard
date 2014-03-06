@@ -13,7 +13,7 @@ define(function (require, exports, module) {
     var Result            = require("modules/Result"),
         Status            = require("modules/Status"),
         MANAGER           = "template.js",
-        UPDATED           = "udpated";
+        UPDATED           = "updated";
 
     // install command for manager
     // returns status, error
@@ -46,9 +46,9 @@ define(function (require, exports, module) {
     // returns array of objects
     function search (query) {
         var result1 = new Result();
-        result1.id = query;
+        result1.id = "brackets-pdm";
         result1.manager = MANAGER;
-        result1.primary =  "Test " + query + " 1";
+        result1.primary =  "brackets-pdm";
         result1.secondary = "Some descriptiong tat is really long and have spelling mistakes";
         result1.link = "http://github.com/khornberg/brackets-cardboard";
         result1.data1 = "Updated 12 hours ago";
@@ -62,7 +62,7 @@ define(function (require, exports, module) {
 
     // get installed packages or dependencies
     // returns array of objects
-    function list () {
+    function getInstalled () {
         var result1 = new Result();
         result1.id = "brackets-pdm";
         result1.manager = MANAGER;
@@ -76,9 +76,9 @@ define(function (require, exports, module) {
     // Helper methods
 
     // determines if the manager is available / reachable from brackets
-    // returns object {manager: boolean}
+    // returns object {manager: name, displayAs, text} if available
     function isAvailable () {
-        return MANAGER;
+        return {"manager" : MANAGER, "displayAs" : "Template" };
     }
 
     // get configuration for manager so pdm knows where to look for installed
@@ -107,7 +107,7 @@ define(function (require, exports, module) {
     exports.uninstall = uninstall;
     exports.update = update;
     exports.search = search;
-    exports.list = list;
+    exports.getInstalled = getInstalled;
     exports.isAvailable = isAvailable;
     exports.getConfig = getConfig;
     exports.getReadme = getReadme;

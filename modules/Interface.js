@@ -118,13 +118,13 @@ define(function (require, exports, module) {
     }
 
     /**
-     * List installed packages/dependencies
+     * Returns installed packages/dependencies
      * @abstract
      * @param  {String} managerName Manager name as defined in the `managerModules` array. Optional.
      * @return {Array}              Deferred* Array of Result objects
      */
-    function list () {
-        // list (managerName)
+    function getInstalled () {
+        // getInstalled (managerName)
         var managerName = (arguments.length === 1) ? arguments[0] : undefined,
             results = [];
 
@@ -132,7 +132,7 @@ define(function (require, exports, module) {
             var deferred = $.Deferred();
 
             require([managerDirectory + managerName], function (manager) {
-                deferred.resolve(manager.list());
+                deferred.resolve(manager.getInstalled());
             });
             results.push(deferred.promise());
 
@@ -143,7 +143,7 @@ define(function (require, exports, module) {
             var deferred = $.Deferred();
 
             require([managerDirectory + managerModule], function (manager) {
-                deferred.resolve(manager.list());
+                deferred.resolve(manager.getInstalled());
             });
             results.push(deferred.promise());
         });
@@ -202,7 +202,7 @@ define(function (require, exports, module) {
     exports.uninstall       = uninstall;
     exports.update          = update;
     exports.search          = search;
-    exports.list            = list;
+    exports.getInstalled    = getInstalled;
     exports.getManagers     = getManagers;
     exports.getAvailable    = getAvailable;
     exports.openReadme      = openReadme;

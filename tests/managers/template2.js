@@ -63,7 +63,7 @@ define(function (require, exports, module) {
 
     // get installed packages or dependencies
     // returns array of objects
-    function list () {
+    function getInstalled () {
         var result1 = new Result(
             "phpDOC",
             MANAGER,
@@ -82,7 +82,7 @@ define(function (require, exports, module) {
     // determines if the manager is available / reachable from brackets
     // returns object {manager: boolean}
     function isAvailable () {
-        return MANAGER;
+        return { "manager" : MANAGER, "displayAs" : "Template 2" };
     }
 
     // get configuration for manager so pdm knows where to look for installed
@@ -111,7 +111,7 @@ define(function (require, exports, module) {
     exports.uninstall = uninstall;
     exports.update = update;
     exports.search = search;
-    exports.list = list;
+    exports.getInstalled = getInstalled;
     exports.isAvailable = isAvailable;
     exports.getConfig = getConfig;
     exports.getReadme = getReadme;
