@@ -11,26 +11,34 @@ define(function (require, exports, module) {
 
     // Dependencies
     var Result            = require("modules/Result"),
-        MANAGER           = "Test";
+        Status            = require("modules/Status"),
+        MANAGER           = "template.js",
+        UPDATED           = "udpated";
 
     // install command for manager
     // returns status, error
     function install (packageName) {
-        var status = packageName + " installed.";
+        var status = new Status();
+        status.id = packageName;
+        status.manager = MANAGER;
+        status.status = "installed";
         return status;
     }
 
     // uninstall command for manager
     // returns status, error
     function uninstall (packageName) {
-        var status = packageName + " uninstalled.";
+        var status = new Status();
+        status.id = packageName;
+        status.manager = MANAGER;
+        status.status = "uninstalled";
         return status;
     }
 
     // update command for manager
     // returns status, error
     function update (packageName) {
-        var status = packageName + " updated.";
+        var status = new Status(packageName, MANAGER, UPDATED);
         return status;
     }
 
