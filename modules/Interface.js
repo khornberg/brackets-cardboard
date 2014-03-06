@@ -12,22 +12,33 @@ define(function (require, exports, module) {
     // Dependencies
     var ExtensionUtils      = brackets.getModule("utils/ExtensionUtils"),
         moduleDirectory     = ExtensionUtils.getModulePath(module),
-//        _                 = brackets.getModule("thirdparty/lodash"),
+//        managerDirectory  = moduleDirectory + "/managers/",
 
         //Tests directory
         managerDirectory    = moduleDirectory + "../tests/managers/",
-//        managerDirectory  = moduleDirectory + "/managers/",
 
-        // Managers
+        /**
+         * Managers are added here by hand currently. Do so by adding the manager file name to the managerModules array.
+         * Then add a new variable that follows the present pattern.
+         * TODO Dynamically load managers
+         */
+
+        /**
+         * The name of the manager file. Include the .js extension. This should also be the name of the manager within the module.
+         * @type {Array}
+         */
         managerModules      = ["template.js", "template2.js"],
         template            = require("tests/managers/template"),
         template2           = require("tests/managers/template2");
 
 
-    // install command for manager
-    // manager to send command to
-    // name package name
-    // returns result
+    /**
+     * Install package/dependency
+     * @abstract
+     * @param  {String} managerModule Manager name as defined in the `managerModules` array
+     * @param  {String} packageName   Unique package/dependency name
+     * @return {Status}               Deferred* Installed Status object
+     */
     function install (managerModule, packageName) {
         var deferred = $.Deferred();
 
@@ -37,7 +48,13 @@ define(function (require, exports, module) {
         return deferred.promise();
     }
 
-    // uninstall command for manager
+    /**
+     * Uninstall package/dependency
+     * @abstract
+     * @param  {String} managerModule Manager name as defined in the `managerModules` array
+     * @param  {String} packageName   Unique package/dependency name
+     * @return {Status}               Deferred* Uninstalled Status object
+     */
     function uninstall (managerModule, packageName) {
         var deferred = $.Deferred();
 
@@ -47,7 +64,13 @@ define(function (require, exports, module) {
         return deferred.promise();
     }
 
-    // update command for manager
+    /**
+     * Update package/dependency
+     * @abstract
+     * @param  {String} managerModule Manager name as defined in the `managerModules` array
+     * @param  {String} packageName   Unique package/dependency name
+     * @return {Status}               Deferred* Updated Status object
+     */
     function update (managerModule, packageName) {
         var deferred = $.Deferred();
 
@@ -57,14 +80,13 @@ define(function (require, exports, module) {
         return deferred.promise();
     }
 
-    // search command for manager
-    /*
-        Searches one or more managers for a package
-        @param String name specific manager to search, optional
-        @param String query package name
-
-        @returns Array of search result objects
-    */
+    /**
+     * Searches one or more managers for a package
+     * @abstract
+     * @param  {String} searchManager Manager name as defined in the `managerModules` array
+     * @param  {String} query         Search query
+     * @return {Array}                Deferred* Search result objects
+     */
     function search () {
         var searchManager = (arguments.length > 1) ? arguments[0] : undefined,
             query = (arguments.length > 1) ? arguments[1]: arguments[0],
@@ -91,11 +113,15 @@ define(function (require, exports, module) {
             results.push(deferred.promise());
         });
 
-
         return results;
     }
 
-    // list installed packages or dependencies
+    /**
+     * List installed packages/dependencies
+     * @abstract
+     * @param  {String} managerName Manager name as defined in the `managerModules` array
+     * @return {Array}              Deferred* Array of Result objects
+     */
     function list (managerName) {
         var results = [];
 
@@ -116,17 +142,20 @@ define(function (require, exports, module) {
         return results;
     }
 
-
     // Helper methods
 
-
-    // get manager modules
-    // currently a static list as an array
+    /**
+     * Returns manager module names added to a static array
+     * @return {Array} Manager module names
+     */
     function getManagers () {
         return managerModules;
     }
 
-    // returns available managers
+    /**
+     * Returns availble managers after a test is performed to ensure the manager is available
+     * @return {Array} Deferred* Array of manager module names
+     */
     function getAvailable () {
         var available = [];
 
@@ -141,17 +170,7 @@ define(function (require, exports, module) {
         return available;
     }
 
-    // get configuration for manager so cardboard knows where to look for installed pagages
-    // returns configuration object (remember to JSON.parse if returning json)
-    function getConfig (managerModule) {
-        var deferred = $.Deferred();
-
-        require([managerDirectory + managerModule], function (manager) {
-            deferred.resolve( manager.getConfig() );
-        });
-        return deferred.promise();
-    }
-
+    // TODO remove?
     // opens readme in default browser
     function openReadme (managerModule, packageName) {
         var NativeApp = brackets.getModule("utils/NativeApp");
@@ -178,7 +197,6 @@ define(function (require, exports, module) {
     exports.list            = list;
     exports.getManagers     = getManagers;
     exports.getAvailable    = getAvailable;
-    exports.getConfig       = getConfig;
     exports.openReadme      = openReadme;
     exports.openUrl         = openUrl;
 });
