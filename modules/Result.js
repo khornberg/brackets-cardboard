@@ -18,8 +18,9 @@ define(function (require, exports, module) {
      * @param {String} data1     Data field (eg. last updated *)
      * @param {String} data2     Data field (eg. version)
      * @param {String} data3     Data field (eg. downloads)
+     * @param {String} status    Status of result; either installed, update, or error
      */
-    function Result (id, manager, primary, secondary, link, data1, data2, data3) {
+    function Result (id, manager, primary, secondary, link, data1, data2, data3, status) {
         this.id         = id;
         this.manager    = manager;
         this.primary    = primary;
@@ -28,6 +29,7 @@ define(function (require, exports, module) {
         this.data1      = data1;
         this.data2      = data2;
         this.data3      = data3;
+        this.status     = status;
     }
     
     Result.prototype.id        = '';
@@ -38,6 +40,7 @@ define(function (require, exports, module) {
     Result.prototype.data1     = '';
     Result.prototype.data2     = '';
     Result.prototype.data3     = '';
+    Result.prototype.status     = '';
     
    return Result;
 });

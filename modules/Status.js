@@ -12,7 +12,7 @@ define(function (require, exports, module) {
      * @class Status of manager event
      * @param {String} id           Unique package/dependency name
      * @param {String} manager      Manager name as defined in the `Interface/managerModules` array
-     * @param {String} status       Any one of the following: installed, updated, uninstalled, error
+     * @param {String} status       Status of event; either installed, updated, uninstalled, error
      * @param {String} errorMessage Error message.
      */
     function Status (id, manager, status) {
