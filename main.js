@@ -139,16 +139,12 @@ define(function (require, exports, module) {
                 case "installed":
                     template = require("text!html/installedButtons.html");
                     $result.removeClass();
-                    $result.addClass('brackets-cardboard-result-' + status.status);
+                    $result.addClass('brackets-cardboard-result-installed');
                     break;
                 case "updated":
                     template = require("text!html/installedButtons.html");
                     $result.removeClass();
-                    $result.addClass('brackets-cardboard-result-' + status.status);
-                    break;
-                case "uninstalled":
-                    template = require("text!html/installButton.html");
-                    $result.removeClass();
+                    $result.addClass('brackets-cardboard-result-installed');
                     break;
                 default:
                     template = require("text!html/installButton.html");

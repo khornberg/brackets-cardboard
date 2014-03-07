@@ -47,16 +47,17 @@ define(function (require, exports, module) {
     // returns array of objects
     function search (query) {
         var result1 = new Result();
-        result1.id = query;
+        result1.id = "brackets-mis-spell";
         result1.manager = MANAGER;
-        result1.primary =  "Test nothing " + query;
+        result1.primary =  "Test nothing splld write";
         result1.secondary = "Some descriptiong tat is really long and have spelling mistakesSome descriptiong tat is really long and have spelling mistakesSome descriptiong tat is really long and have spelling mistakes";
         result1.link = "http://github.com/khornberg/brackets-nothing";
         result1.data1 = "Updated 18 hours ago";
         result1.data2 = "2 Forks";
         result1.data3 = "<a href='" + result1.link + "'>README</a>";
 
-        var result2 = new Result(query + " nohting", MANAGER, query + " nohting", "Secondary descriptoing :)", "http://github.com/khornberg/brackets-git", "Update yesterday", "2 forks", "1,2 Stars");
+
+        var result2 = new Result("phpDOC", MANAGER, "Test2 phpDOC", "Secondary descriptoing :)", "http://github.com/khornberg/phpDOC", "", "", "");
 
         return [result1, result2];
     }
