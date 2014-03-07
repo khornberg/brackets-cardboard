@@ -87,13 +87,6 @@ define(function (require, exports, module) {
         return { "manager" : MANAGER, "displayAs" : "Example 2" };
     }
 
-    // get configuration for manager so pdm knows where to look for installed
-    // returns object of configuration data
-    function getConfig () {
-        var config = { "directory": "app/example2" };
-        return config;
-    }
-
     // get readme url
     // returns url of readem for package
     function getReadme (packageName) {
