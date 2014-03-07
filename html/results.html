@@ -1,7 +1,7 @@
 <table class="table table-striped table-condensed row-highlight">
     <tbody>
         {{#results}}
-        <tr data-id="{{id}}" data-manager="{{manager}}" class="{{#status}}brackets-cardboard-result-{{status}}{{/status}}">
+        <tr data-id="{{id}}" data-manager="{{manager}}" {{#status}}class="brackets-cardboard-result-{{status}}"{{/status}}>
             <td><a href="{{link}}">{{primary}}</a></td>
             <td>{{secondary}}</td>
             <td>{{& data1}}</td>

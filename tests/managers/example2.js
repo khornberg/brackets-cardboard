@@ -73,7 +73,8 @@ define(function (require, exports, module) {
             "http://github.com/khornberg/phpDOC",
             "",
             "",
-            "<a href='http://github.com/khornberg/brackets-pdm/blob/master/README.md'>README</a>"
+            "<a href='http://github.com/khornberg/brackets-pdm/blob/master/README.md'>README</a>",
+            "installed"
             );
         return [result1];
     }

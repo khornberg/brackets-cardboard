@@ -173,13 +173,13 @@ define(function (require, exports, module) {
                 cardboardTogglePanel(false);
             })
             .on( "click", "#brackets-cardboard-show", function () {
-                var $results = $('tr:not([class=""])', $(".brackets-cardboard-table tbody")),
+                var $installed = $(".brackets-cardboard-result-installed, .brackets-cardboard-result-update"),
                     $showButton = $("#brackets-cardboard-show"),
-                    RESULTS = ($results.length > 0) ? true : false;
+                    rows = ($(".brackets-cardboard-table tr").length > 0) ? true : false;
 
                 // results are present (eg. a search performed)
-                if (RESULTS) {
-                    $results.toggle();
+                if (rows) {
+                    $installed.toggle();
                     // toggle button
                     if ($showButton.html() === Strings.HIDE_INSTALLED) {
                         $(this).html(Strings.SHOW_INSTALLED);

@@ -70,6 +70,7 @@ define(function (require, exports, module) {
         result1.primary ="Brackets PDM";
         result1.link = "http://github.com/khornberg/brackets-pdm";
         result1.data1 = "<a href='http://github.com/khornberg/brackets-pdm/blob/master/README.md'>README</a>";
+        result1.status = "installed";
 
         return [result1];
     }
