@@ -2,19 +2,18 @@
 /*global define, $, brackets */
 
 /*
-    template.js
-    Provides a manager template and tests.
+    example.js
+    Provides a manager example and tests.
  */
 
 define(function (require, exports, module) {
     'use strict';
 
     // Dependencies
-
     var Result            = require("modules/Result"),
         Status            = require("modules/Status"),
-        MANAGER           = "template2.js",
-        UPDATED           = "udpated";
+        MANAGER           = "example.js",
+        UPDATED           = "updated";
 
     // install command for manager
     // returns status, error
@@ -47,48 +46,45 @@ define(function (require, exports, module) {
     // returns array of objects
     function search (query) {
         var result1 = new Result();
-        result1.id = query;
+        result1.id = "brackets-pdm";
         result1.manager = MANAGER;
-        result1.primary =  "Test nothing " + query;
-        result1.secondary = "Some descriptiong tat is really long and have spelling mistakesSome descriptiong tat is really long and have spelling mistakesSome descriptiong tat is really long and have spelling mistakes";
-        result1.link = "http://github.com/khornberg/brackets-nothing";
-        result1.data1 = "Updated 18 hours ago";
-        result1.data2 = "2 Forks";
-        result1.data3 = "<a href='" + result1.link + "'>README</a>";
-            
-        var result2 = new Result(query + " nohting", MANAGER, query + " nohting", "Secondary descriptoing :)", "http://github.com/khornberg/brackets-git", "Update yesterday", "2 forks", "1,2 Stars");
-        
+        result1.primary =  "brackets-pdm";
+        result1.secondary = "Some descriptiong tat is really long and have spelling mistakes";
+        result1.link = "http://github.com/khornberg/brackets-cardboard";
+        result1.data1 = "Updated 12 hours ago";
+        result1.data2 = "<i class='fa fa-code-fork'></i> 2 Forks";
+        result1.data3 = "<i class='fa fa-star'></i> 4 Stars";
+
+        var result2 = new Result(query + "2", MANAGER, "Primary name of result", "Secondary descriptoing :)", "http://github.com/khornberg/brackets-git", "Update yesterday", "500 forks", "1,200 Stars");
+
         return [result1, result2];
     }
 
     // get installed packages or dependencies
     // returns array of objects
     function getInstalled () {
-        var result1 = new Result(
-            "phpDOC",
-            MANAGER,
-            "Test2 phpDOC",
-            "",
-            "http://github.com/khornberg/phpDOC",
-            "",
-            "",
-            "<a href='http://github.com/khornberg/brackets-pdm/blob/master/README.md'>README</a>"
-            );
+        var result1 = new Result();
+        result1.id = "brackets-pdm";
+        result1.manager = MANAGER;
+        result1.primary ="Brackets PDM";
+        result1.link = "http://github.com/khornberg/brackets-pdm";
+        result1.data1 = "<a href='http://github.com/khornberg/brackets-pdm/blob/master/README.md'>README</a>";
+
         return [result1];
     }
 
     // Helper methods
 
     // determines if the manager is available / reachable from brackets
-    // returns object {manager: boolean}
+    // returns object {manager: name, displayAs, text} if available
     function isAvailable () {
-        return { "manager" : MANAGER, "displayAs" : "Template 2" };
+        return {"manager" : MANAGER, "displayAs" : "Example" };
     }
 
     // get configuration for manager so pdm knows where to look for installed
     // returns object of configuration data
     function getConfig () {
-        var config = { "directory": "app/bower" };
+        var config = { "directory": "app/example" };
         return config;
     }
 

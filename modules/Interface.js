@@ -27,9 +27,9 @@ define(function (require, exports, module) {
          * The name of the manager file. Include the .js extension. This should also be the name of the manager within the module.
          * @type {Array}
          */
-        managerModules      = ["template.js", "template2.js"],
-        template            = require("tests/managers/template"),
-        template2           = require("tests/managers/template2");
+        managerModules      = ["example.js", "example2.js"],
+        template            = require("tests/managers/example"),
+        template2           = require("tests/managers/example2");
 
 
     /**
