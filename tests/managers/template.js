@@ -10,9 +10,37 @@ define(function (require, exports, module) {
     'use strict';
 
     // Dependencies
-    var Result            = require("modules/Result"),
-        Status            = require("modules/Status"),
-        MANAGER           = "template.js"; //same as your file name
+    var NodeConnection = brackets.getModule("utils/NodeConnection"),
+        ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
+        ProjectManager = brackets.getModule("project/ProjectManager"),
+
+        projectDirectory = ProjectManager.getProjectRoot(),
+        Node             = require("modules/Node"),
+        Result           = require("modules/Result"),
+        Status           = require("modules/Status"),
+        DOMAIN           = "brackets-cardboard",
+        PATH             = projectDirectory._path,
+        MANAGER          = "template.js"; //same as your file name
+
+    Node.fail(function (err){
+     console.log('Error with Node', err);
+    });
+
+    /**
+     * To use Node, each command must be wrapped in a done function
+     * See domains.js, and the following example:
+     *
+     */
+
+     // Node.done(function(nodeComamnd) {
+     //    var ls = nodeComamnd(dir._path, 'ls', ['-l', '-a']);
+     //    ls.fail(function (err) {
+     //        console.log('command failed', err);
+     //    });
+     //    ls.done(function (stdout) {
+     //        console.log(stdout);
+     //    });
+     // });
 
     /**
      * Install command
@@ -47,7 +75,64 @@ define(function (require, exports, module) {
      * @return {Array}        Array of Result objects
      */
     function search (query) {
+        // global node bin path
+        // bower search (test)
+        // bower info
+        //
+        var results = [];
+        var deferred = $.Deferred();
 
+        Node.done(function(nodeCommand) {
+
+            var command = nodeCommand.execute(PATH, 'npm', ['-g', 'bin']);
+
+            command.fail(function (err) {
+                console.error('Could not get global npm bin path', err);
+            });
+            command.then(function (stdout) {
+                var BOWERPATH = stdout;
+                console.log(stdout);
+                return BOWERPATH;
+            }).done(function (BOWERPATH){
+
+                var list = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'search', query]);
+
+                list.fail(function (err) {
+                    console.error('Could not list bower packages', err);
+                });
+                list.then(function (stdout) {
+                    var search = JSON.parse(stdout);
+                    console.log(search);
+                    return search;
+                }).done(function (search) {
+
+                    var pkgInfo = [];
+
+                    search.forEach(function (pkg) {
+                        var info = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'info', pkg.url]);
+                        var pkgDeferred = $.Deferred();
+
+                        info.fail(function (err) {
+                            console.error('Could not list bower packages', err);
+                        });
+                        info.done(function (stdout) {
+                            var details = JSON.parse(stdout);
+
+                            //id, manager, primary, secondary, link, data1, data2, data3, status
+                            pkgDeferred.resolve(new Result(details.latest.name, MANAGER, details.latest.name, details.latest.description, details.latest.homepage, 'Version ' + details.latest.version, 'License ' + details.latest.license, '', ''));
+
+                        }); // info
+
+                        pkgInfo.push(pkgDeferred.promise());
+                    }); //forEach
+
+                    deferred.resolve(pkgInfo);
+                }); // list
+            }); // command
+        }); // node
+
+        results.push(deferred.promise());
+        return results;
     }
 
     /**
@@ -55,7 +140,64 @@ define(function (require, exports, module) {
      * @return {Array} Array of Result objects
      */
     function getInstalled () {
+        // global node bin path
+        // bower search (test)
+        // bower info
+        //
+        var results = [];
+        var deferred = $.Deferred();
 
+        Node.done(function(nodeCommand) {
+
+            var command = nodeCommand.execute(PATH, 'npm', ['-g', 'bin']);
+
+            command.fail(function (err) {
+                console.error('Could not get global npm bin path', err);
+            });
+            command.then(function (stdout) {
+                var BOWERPATH = stdout;
+                console.log(stdout);
+                return BOWERPATH;
+            }).done(function (BOWERPATH){
+
+                var list = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'list']);
+
+                list.fail(function (err) {
+                    console.error('Could not list bower packages', err);
+                });
+                list.then(function (stdout) {
+                    var search = JSON.parse(stdout);
+                    console.log(search);
+                    return search;
+                }).done(function (search) {
+
+                    var pkgInfo = [];
+
+                    search.forEach(function (pkg) {
+                        var info = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'info', pkg.url]);
+                        var pkgDeferred = $.Deferred();
+
+                        info.fail(function (err) {
+                            console.error('Could not list bower packages', err);
+                        });
+                        info.done(function (stdout) {
+                            var details = JSON.parse(stdout);
+
+                            //id, manager, primary, secondary, link, data1, data2, data3, status
+                            pkgDeferred.resolve(new Result(details.latest.name, MANAGER, details.latest.name, details.latest.description, details.latest.homepage, 'Version ' + details.latest.version, 'License ' + details.latest.license, '', ''));
+
+                        }); // info
+
+                        pkgInfo.push(pkgDeferred.promise());
+                    }); //forEach
+
+                    deferred.resolve(pkgInfo);
+                }); // list
+            }); // command
+        }); // node
+
+        results.push(deferred.promise());
+        return results;
     }
 
     // Helper methods
@@ -67,7 +209,7 @@ define(function (require, exports, module) {
     function isAvailable () {
         return {
             "manager" : MANAGER,
-            "displayAs" : ""
+            "displayAs" : "Template"
         };
     }
 
@@ -86,7 +228,35 @@ define(function (require, exports, module) {
      * @return {String}             URL of package/dependency
      */
     function getUrl (packageName) {
+        var deferred = $.Deferred();
 
+        Node.done(function(nodeCommand) {
+
+            var command = nodeCommand.execute(PATH, 'npm', ['-g', 'bin']);
+
+            command.fail(function (err) {
+                console.error('Could not get global npm bin path', err);
+            });
+            command.then(function (stdout) {
+                var BOWERPATH = stdout;
+                console.log(stdout);
+                return BOWERPATH;
+            }).done(function (BOWERPATH){
+
+                var list = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'lookup', packageName]);
+
+                list.fail(function (err) {
+                    console.error('Could not lookup bower package url', err);
+                });
+                list.then(function (stdout) {
+                    var search = JSON.parse(stdout);
+                    console.debug(search.url);
+                    deferred.resolve(search.url);
+                });
+            });
+        });
+
+        return deferred.promise();
     }
 
     exports.install      = install;

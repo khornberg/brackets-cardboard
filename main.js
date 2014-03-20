@@ -18,6 +18,7 @@ define(function (require, exports, module) {
         ExtensionUtils    = brackets.getModule("utils/ExtensionUtils"),
         AppInit           = brackets.getModule("utils/AppInit"),
         FileSystem        = brackets.getModule("filesystem/FileSystem"),
+
         _                 = brackets.getModule("thirdparty/lodash"),
 
         // Setup Extension
@@ -27,6 +28,7 @@ define(function (require, exports, module) {
         // Extension modules
         Interface         = require("modules/Interface"),
         Strings           = require("strings"),
+        Result           = require("modules/Result"),
 
         // Extension variables
         COMMAND_ID        = "brackets-cardboard.cardboardTogglePanel",
@@ -41,26 +43,83 @@ define(function (require, exports, module) {
     waitForIt(Interface.getAvailable(), "getAvailable");
     var i = Interface.install(m[0], "Package 1");
 
-    wait(i, "install");
-    wait(Interface.uninstall(m[0], "package :( "), "uninstall");
-    wait(Interface.update(m[0], "package ..."), "update");
-    waitForIt(Interface.search(m[1], "PKG"), "seach single");
-    waitForIt(Interface.search("PKG"), "search all");
-    waitForIt(Interface.getInstalled(m[0]), "getInstalled single");
-    waitForIt(Interface.getInstalled(), "getInstalled all");
+    // wait(i, "install");
+    // wait(Interface.uninstall(m[0], "package :( "), "uninstall");
+    // wait(Interface.update(m[0], "package ..."), "update");
+    // waitForIt(Interface.search(m[1], "PKG"), "seach single");
+    // waitForIt(Interface.search("PKG"), "search all");
+    // waitForIt3(Interface.getInstalled(m[2]), "getInstalled single template");
+    // waitForIt(Interface.getInstalled(), "getInstalled all");
 //    testData.openReadme  = Interface.openReadme(testData.getManagers[0], "PACKage");
-//    testData.openUrl     = Interface.openUrl(testData.getManagers[0], "pakage");
+    // waitForIt3(Interface.getUrl(m[2], "bible.math"), "getUrl");
 
     function waitForIt (promise, msg) {
-        $.when.apply($, promise).then(function () {
+        $.when.apply($, promise).done(function () {
                 var e = arguments;
                 console.log(msg + " promise:", e);
             });
     }
 
+    function waitForIt2 (promise, msg) {
+
+        $.when.apply($, promise).done(function () {
+                var e = arguments;
+
+                e[0][0].then(function (zz) {
+                    console.log('mhhah', zz);
+                    var results = []
+                    zz.forEach(function (obj, index, arr) {
+
+                        obj.done(function (zzz) {
+                            console.log('all done obj', zzz);
+                            results.push(zzz);
+                            // SHOULD BE ADD RESULT ROW
+                            if (index === arr.length - 1) {
+                                var r = { "results" : results };
+                                updateResults(r, ".brackets-cardboard-table");
+                            }
+                        });
+                    });
+
+                    $.when(zz).done(function () { console.log('when done'); });
+                }).done(function () { console.log("done") });
+                console.log(msg + " promise:", e);
+
+        });
+    }
+
+    // to use apply all promises must be in an array
+    function waitForIt3 (promiseArray, msg) {
+
+        var results = [],
+            promiseArray = (_.isArray(promiseArray)) ? promiseArray : [promiseArray];
+
+        $.when.apply($, promiseArray).done(function () {
+            var args = Array.prototype.slice.call(arguments);
+
+            args.forEach(function (value) {
+                if (value instanceof Result || _.isString(value)) {
+                    results.push(value);
+                }
+
+                if ((_.isArray(value) || _.isPlainObject(value)) && !_.isArguments(value)) {
+                    waitForIt3(value, "recursivly");
+                }
+            });
+            console.debug(results, msg);
+
+            if (results.length > 0 && _.isString(results[0])) {
+                console.log("results has items");
+                var NativeApp = brackets.getModule("utils/NativeApp");
+                NativeApp.openURLInDefaultBrowser(results[0].replace("git://", "http://"));
+            }
+        });
+    }
+
     function wait (promise, msg) {
         $.when(promise).then(function (data) {
                 console.log(data, msg);
+                return data;
             });
     }
 // --------------------------------------------------------------
@@ -68,6 +127,39 @@ define(function (require, exports, module) {
     // Load CSS
     ExtensionUtils.loadStyleSheet(module, "css/brackets-cardboard.css");
     ExtensionUtils.loadStyleSheet(module, "css/font-awesome.min.css");
+
+    // Utility Methods
+
+    // Recursively wait on arrays of deferred objects
+    // results are the eventual values of each promise
+    // A call can be given which receives the results of the reduce
+    function deferredReduce (deferredArray, callback) {
+
+        var results = [],
+            deferredArray = (_.isArray(deferredArray)) ? deferredArray : [deferredArray];
+
+        $.when.apply($, deferredArray).done(function () {
+            var args = Array.prototype.slice.call(arguments);
+
+            args.forEach(function (value) {
+                if (value instanceof Result || _.isString(value)) {
+                    results.push(value);
+                }
+
+                if ((_.isArray(value) || _.isPlainObject(value)) && !_.isArguments(value)) {
+                    deferredReduce(value, callback);
+                }
+            });
+
+            if (results.length > 0) {
+                console.debug("deferredReduce", results);
+                callback(results);
+            }
+        });
+    }
+
+
+
 
     // UI Methods
 
@@ -187,11 +279,10 @@ define(function (require, exports, module) {
                         $(this).html(Strings.HIDE_INSTALLED);
                     }
                 } else { // show only the installed packages
-                    $.when.apply($, Interface.getInstalled()).then( function () {
-                        var args = arguments,
-                            results = { "results" : _.flatten(args) };
+                    deferredReduce(Interface.getInstalled(), function (results) {
+                        var obj = { "results" : results };
 
-                        updateResults(results, ".brackets-cardboard-table");
+                        updateResults(obj, ".brackets-cardboard-table");
                     });
                 }
             })
@@ -201,18 +292,16 @@ define(function (require, exports, module) {
                         manager = $("#brackets-cardboard-managers .dropdown").attr("data-id");
 
                     if (manager === Strings.SEARCH_ALL) {
-                        $.when.apply($, Interface.search(query)).then( function () {
-                            var args = arguments,
-                                results = { "results" : _.flatten(args) };
+                        deferredReduce(Interface.search(query), function (results) {
+                            var obj = { "results" : results };
 
-                            updateResults(results, "brackets-cardboard-table");
+                            updateResults(obj, "brackets-cardboard-table");
                         });
                     } else {
-                        $.when.apply($, Interface.search(manager, query)).then( function () {
-                            var args = arguments,
-                                results = { "results" : _.flatten(args) };
+                        deferredReduce(Interface.search(manager, query), function (results) {
+                            var obj = { "results" : results };
 
-                            updateResults(results, ".brackets-cardboard-table");
+                            updateResults(obj, ".brackets-cardboard-table");
                         });
                     }
                 }

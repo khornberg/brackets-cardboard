@@ -194,6 +194,16 @@ define(function (require, exports, module) {
         });
     }
 
+    // gets project url
+    function getUrl (managerModule, packageName) {
+        var deferred = $.Deferred();
+
+        require([managerDirectory + managerModule], function (manager) {
+            deferred.resolve(manager.getUrl(packageName));
+        });
+        return deferred.promise()
+    }
+
     /** Installs package/dependency */
     exports.install         = install;
     /** Uninstalls package/dependency */
@@ -212,6 +222,8 @@ define(function (require, exports, module) {
     exports.openReadme      = openReadme;
     /** Opens package/dependency url */
     exports.openUrl         = openUrl;
+    /** Gets package/dependency url */
+    exports.getUrl          = getUrl;
 });
 
 //sdg
