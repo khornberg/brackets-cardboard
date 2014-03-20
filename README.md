@@ -11,7 +11,7 @@ Initially this will have the ability to work with npm and bower (seemed like nat
 This is very early in development. Not everything works.
 
 ## Screenshots
-![Search]()
+![Search](screenshots/search.png "Search for math on bower")
 ![List]()
 ![Install]()
 ![Delete]()
