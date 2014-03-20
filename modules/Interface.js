@@ -1,10 +1,10 @@
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, regexp: true, indent: 4, maxerr: 50 */
 /*global define, $, brackets */
 
-/*
-    Interface.js
-    Provides the abstract interface for all managers.
-*/
+/**
+ * Provides the abstract interface for all managers.
+ * @module  Interface
+ */
 
 define(function (require, exports, module) {
     'use strict';
@@ -27,10 +27,7 @@ define(function (require, exports, module) {
          * The name of the manager file. Include the .js extension. This should also be the name of the manager within the module.
          * @type {Array}
          */
-        managerModules      = ["example.js", "example2.js"],
-        template            = require("tests/managers/example"),
-        template2           = require("tests/managers/example2");
-
+        managerModules      = ["example.js", "example2.js", "template.js"];
 
     /**
      * Install package/dependency
@@ -197,14 +194,24 @@ define(function (require, exports, module) {
         });
     }
 
-    // API
+    /** Installs package/dependency */
     exports.install         = install;
+    /** Uninstalls package/dependency */
     exports.uninstall       = uninstall;
+    /** Updates package/dependency */
     exports.update          = update;
+    /** Search for package/dependency */
     exports.search          = search;
+    /** List installed packages/dependencies */
     exports.getInstalled    = getInstalled;
+    /** Get managers */
     exports.getManagers     = getManagers;
+    /** Get installed and properly configured managers */
     exports.getAvailable    = getAvailable;
+    /** Opens readme for a package/dependency */
     exports.openReadme      = openReadme;
+    /** Opens package/dependency url */
     exports.openUrl         = openUrl;
 });
+
+//sdg
