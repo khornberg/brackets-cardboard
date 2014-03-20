@@ -108,7 +108,6 @@ define(function (require, exports, module) {
     exports.search = search;
     exports.getInstalled = getInstalled;
     exports.isAvailable = isAvailable;
-    exports.getConfig = getConfig;
     exports.getReadme = getReadme;
     exports.getUrl = getUrl;
 
