@@ -1,8 +1,3 @@
-.brackets-cardboard {
-    display: inline;
-}
-
-
 /* mimics simple-toolbar-layout but allows dropdowns */
 .brackets-cardboard-toolbar-layout {
     display: -webkit-box;
