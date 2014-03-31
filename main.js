@@ -40,8 +40,8 @@ define(function (require, exports, module) {
     console.log("returned managers", m);
 
     //Deferred returns
-    waitForIt(Interface.getAvailable(), "getAvailable");
-    var i = Interface.install(m[0], "Package 1");
+    // waitForIt(Interface.getAvailable(), "getAvailable");
+    // var i = Interface.install(m[0], "Package 1");
 
     // wait(i, "install");
     // wait(Interface.uninstall(m[0], "package :( "), "uninstall");
@@ -320,7 +320,8 @@ define(function (require, exports, module) {
                 var id = $(this).parents("tr").attr("data-id"),
                     manager = $(this).parents("tr").attr("data-manager");
 
-                $.when( Interface.install(manager, id) ).then ( function (status) {
+                //not working
+                deferredReduce(Interface.install(manager, id), function (status) {
                     updateResult(status);
                 });
             })

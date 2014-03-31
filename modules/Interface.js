@@ -10,12 +10,12 @@ define(function (require, exports, module) {
     'use strict';
 
     // Dependencies
-    var ExtensionUtils      = brackets.getModule("utils/ExtensionUtils"),
-        moduleDirectory     = ExtensionUtils.getModulePath(module),
-//        managerDirectory  = moduleDirectory + "/managers/",
+    var ExtensionUtils   = brackets.getModule("utils/ExtensionUtils"),
+        moduleDirectory  = ExtensionUtils.getModulePath(module),
+        managerDirectory = moduleDirectory + "/managers/",
 
         //Tests directory
-        managerDirectory    = moduleDirectory + "../tests/managers/",
+        // managerDirectory    = moduleDirectory + "../tests/managers/",
 
         /**
          * Managers are added here by hand currently. Do so by adding the manager file name to the managerModules array.
@@ -27,7 +27,8 @@ define(function (require, exports, module) {
          * The name of the manager file. Include the .js extension. This should also be the name of the manager within the module.
          * @type {Array}
          */
-        managerModules      = ["example.js", "example2.js", "template.js"];
+        // managerModules      = ["example.js", "example2.js", "template.js"];
+        managerModules      = ["bower.js"];
 
     /**
      * Install package/dependency
