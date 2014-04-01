@@ -8,7 +8,7 @@ What do most packages arrive in? A cardboard box. Your packages are arriving thr
 
 Initially this will have the ability to work with npm and bower (seemed like natural choices).
 
-This is very early in development. Not everything works.
+This is very early in development. Not everything works. Check the console for messages if you are curious.
 
 ## Screenshots
 ![Search](screenshots/search.png "Search for math on bower")
