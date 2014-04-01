@@ -291,19 +291,24 @@ define(function (require, exports, module) {
                     var query = $(this).val(),
                         manager = $("#brackets-cardboard-managers .dropdown").attr("data-id");
 
+                    $('.brackets-cardboard-search input').addClass('brackets-cardboard-spinner'); // start spinner
+
                     if (manager === Strings.SEARCH_ALL) {
                         deferredReduce(Interface.search(query), function (results) {
                             var obj = { "results" : results };
 
                             updateResults(obj, "brackets-cardboard-table");
+                            $('.brackets-cardboard-search input').removeClass('brackets-cardboard-spinner'); //stop spinner
                         });
                     } else {
                         deferredReduce(Interface.search(manager, query), function (results) {
                             var obj = { "results" : results };
 
                             updateResults(obj, ".brackets-cardboard-table");
+                            $('.brackets-cardboard-search input').removeClass('brackets-cardboard-spinner'); //stop spinner
                         });
                     }
+
                 }
             })
             .on( "click", ".brackets-cardboard-manager", function () {
@@ -320,7 +325,6 @@ define(function (require, exports, module) {
                 var id = $(this).parents("tr").attr("data-id"),
                     manager = $(this).parents("tr").attr("data-manager");
 
-                //not working
                 deferredReduce(Interface.install(manager, id), function (status) {
                     updateResult(status);
                 });
