@@ -1,7 +1,7 @@
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, regexp: true, indent: 4, maxerr: 50 */
 /*global define, $, brackets, Mustache, _ */
 
-/** 
+/**
     brackets-cardboard Brackets Cardboard Extension
     Manage packages/dependencies for your project.
     Copyright 2014 Kyle Hornberg
@@ -18,7 +18,6 @@ define(function (require, exports, module) {
         ExtensionUtils    = brackets.getModule("utils/ExtensionUtils"),
         AppInit           = brackets.getModule("utils/AppInit"),
         FileSystem        = brackets.getModule("filesystem/FileSystem"),
-
         _                 = brackets.getModule("thirdparty/lodash"),
 
         // Setup Extension
@@ -28,7 +27,8 @@ define(function (require, exports, module) {
         // Extension modules
         Interface         = require("modules/Interface"),
         Strings           = require("strings"),
-        Result           = require("modules/Result"),
+        Result            = require("modules/Result"),
+        Status            = require("modules/Status"),
 
         // Extension variables
         COMMAND_ID        = "brackets-cardboard.cardboardTogglePanel",
@@ -142,7 +142,7 @@ define(function (require, exports, module) {
             var args = Array.prototype.slice.call(arguments);
 
             args.forEach(function (value) {
-                if (value instanceof Result || _.isString(value)) {
+                if (value instanceof Result || value instanceof Status || _.isString(value)) {
                     results.push(value);
                 }
 
@@ -211,7 +211,7 @@ define(function (require, exports, module) {
             templateData = _.merge(results, Strings),
             templatePartials = { installButton : templateInstallButton, installedButtons : templateInstalledButtons},
             templateHtml = Mustache.render(template, templateData, templatePartials),
-            $showButton = $('#brackets-cardboard-show');;
+            $showButton = $('#brackets-cardboard-show');
 
         $(selector).html(templateHtml);
         $showButton.html(Strings.HIDE_INSTALLED);
@@ -219,15 +219,15 @@ define(function (require, exports, module) {
 
     /**
      * Updates a single result on the cardboard results table
-     * @param  {Status} status   Status object
+     * @param  {Array} statuses   Array of Status objects
      */
-    function updateResult(status) {
+    function updateResult(statuses) {
         var template,
             templateData = Strings,
             templateHtml,
-            $result = $("tr[data-id='" + status.id + "']");
+            $result = $("tr[data-id='" + statuses[0].id + "']");
 
-            switch(status.status) {
+            switch(statuses[0].status) {
                 case "installed":
                     template = require("text!html/installedButtons.html");
                     $result.removeClass();

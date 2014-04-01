@@ -75,10 +75,13 @@ define(function (require, exports, module) {
                 });
                 install.done(function (stdout) {
                     var response = JSON.parse(stdout);
-                    // TODO response of {} = package already installed
-                    console.log(response[packageName].endpoint);
-                    var status = new Status(response[packageName].endpoint.name, MANAGER, "installed");
-                    deferred.resolve([status]);
+
+                    if ($.isEmptyObject(response)) {
+                        console.log(packageName, "already installed");
+                    } else {
+                        var status = new Status(response[packageName].endpoint.name, MANAGER, "installed");
+                        deferred.resolve(status);
+                    }
                 }) // install
             }); // command
         }); // node
