@@ -9,7 +9,8 @@ define(function (require, exports, module) {
     'use strict';
 
     /**
-     * @class Status of manager event
+     * Status of manager event
+     * @class Status
      * @param {String} id           Unique package/dependency name
      * @param {String} manager      Manager name as defined in the `Interface/managerModules` array
      * @param {String} status       Status of event; either installed, updated, uninstalled, error

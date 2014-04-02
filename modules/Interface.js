@@ -3,7 +3,7 @@
 
 /**
  * Provides the abstract interface for all managers.
- * @module  Interface
+ * @class  Interface
  */
 
 define(function (require, exports, module) {
@@ -32,6 +32,7 @@ define(function (require, exports, module) {
 
     /**
      * Install package/dependency
+     * @memberof Interface
      * @abstract
      * @param  {String} managerModule Manager name as defined in the `managerModules` array
      * @param  {String} packageName   Unique package/dependency name
@@ -48,6 +49,7 @@ define(function (require, exports, module) {
 
     /**
      * Uninstall package/dependency
+     * @memberof Interface
      * @abstract
      * @param  {String} managerModule Manager name as defined in the `managerModules` array
      * @param  {String} packageName   Unique package/dependency name
@@ -64,6 +66,7 @@ define(function (require, exports, module) {
 
     /**
      * Update package/dependency
+     * @memberof Interface
      * @abstract
      * @param  {String} managerModule Manager name as defined in the `managerModules` array
      * @param  {String} packageName   Unique package/dependency name
@@ -80,6 +83,7 @@ define(function (require, exports, module) {
 
     /**
      * Searches one or more managers for a package
+     * @memberof Interface
      * @abstract
      * @param  {String} searchManager Manager name as defined in the `managerModules` array. Optional
      * @param  {String} query         Search query
@@ -117,6 +121,7 @@ define(function (require, exports, module) {
 
     /**
      * Returns installed packages/dependencies
+     * @memberof Interface
      * @abstract
      * @param  {String} managerName Manager name as defined in the `managerModules` array. Optional.
      * @return {Array}              Deferred* Array of Result objects
@@ -152,6 +157,7 @@ define(function (require, exports, module) {
 
     /**
      * Returns manager module names added to a static array
+     * @memberof Interface
      * @return {Array} Manager module names
      */
     function getManagers () {
@@ -160,6 +166,7 @@ define(function (require, exports, module) {
 
     /**
      * Returns availble managers after a test is performed to ensure the manager is available
+     * @memberof Interface
      * @return {Array} Deferred* Array of manager module names
      */
     function getAvailable () {
@@ -205,25 +212,15 @@ define(function (require, exports, module) {
         return deferred.promise();
     }
 
-    /** Installs package/dependency */
     exports.install         = install;
-    /** Uninstalls package/dependency */
     exports.uninstall       = uninstall;
-    /** Updates package/dependency */
     exports.update          = update;
-    /** Search for package/dependency */
     exports.search          = search;
-    /** List installed packages/dependencies */
     exports.getInstalled    = getInstalled;
-    /** Get managers */
     exports.getManagers     = getManagers;
-    /** Get installed and properly configured managers */
     exports.getAvailable    = getAvailable;
-    /** Opens readme for a package/dependency */
     exports.openReadme      = openReadme;
-    /** Opens package/dependency url */
     exports.openUrl         = openUrl;
-    /** Gets package/dependency url */
     exports.getUrl          = getUrl;
 });
 

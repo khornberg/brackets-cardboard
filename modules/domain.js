@@ -1,6 +1,8 @@
 /*global require, exports, Buffer */
 
 /**
+ * Brackets node domain
+ * @module domain
  * @author Martin Zagora
  * @license MIT
  * @modified for use here

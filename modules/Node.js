@@ -4,7 +4,8 @@
 /**
  * Node.js
  * Creates a node connection for a manager
- * @returns {jQuery Deferred} Deferred execute function
+ * @module Node
+ * @returns {jQuery | Deferred} Deferred execute function
  */
 
 define(function (require, exports, module) {
