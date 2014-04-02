@@ -12,7 +12,7 @@ define(function (require, exports, module) {
     // Dependencies
     var Result            = require("modules/Result"),
         Status            = require("modules/Status"),
-        MANAGER           = "example.js",
+        MANAGER           = "test.js",
         UPDATED           = "updated";
 
     // install command for manager
@@ -80,7 +80,7 @@ define(function (require, exports, module) {
     // determines if the manager is available / reachable from brackets
     // returns object {manager: name, displayAs, text} if available
     function isAvailable () {
-        return {"manager" : MANAGER, "displayAs" : "Example" };
+        return {"manager" : MANAGER, "displayAs" : "Test" };
     }
 
     // get readme url
