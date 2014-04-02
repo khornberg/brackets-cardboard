@@ -24,7 +24,7 @@ define(function (require, exports, module) {
         NAME             = "Bower"; // display name
 
     Node.fail(function (err){
-     console.log('Error with Node', err);
+     console.error('Error with Node', err);
     });
 
     /**
@@ -64,7 +64,7 @@ define(function (require, exports, module) {
             });
             command.then(function (stdout) {
                 var BOWERPATH = stdout;
-                console.log(stdout);
+                console.debug(stdout);
                 return BOWERPATH;
             }).done(function (BOWERPATH){
 
@@ -96,7 +96,45 @@ define(function (require, exports, module) {
      * @return {Status}             Status object
      */
     function uninstall (packageName) {
+        // global node bin path
+        // bower uninstall
 
+        var results = [];
+        var deferred = $.Deferred();
+
+        Node.done(function(nodeCommand) {
+
+            var command = nodeCommand.execute(PATH, 'npm', ['-g', 'bin']);
+
+            command.fail(function (err) {
+                console.error('Could not get global npm bin path', err);
+            });
+            command.then(function (stdout) {
+                var BOWERPATH = stdout;
+                console.debug(stdout);
+                return BOWERPATH;
+            }).done(function (BOWERPATH){
+
+                var install = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'uninstall', packageName]);
+
+                install.fail(function (err) {
+                    console.error('Could not install bower package', packageName, err);
+                });
+                install.done(function (stdout) {
+                    var response = JSON.parse(stdout);
+
+                    if ($.isEmptyObject(response)) {
+                        console.log(packageName, "not installed");
+                    } else {
+                        var status = new Status(packageName, MANAGER, "uninstalled");
+                        deferred.resolve(status);
+                    }
+                }) // install
+            }); // command
+        }); // node
+
+        results.push(deferred.promise());
+        return results;
     }
 
     /**
@@ -130,7 +168,7 @@ define(function (require, exports, module) {
             });
             command.then(function (stdout) {
                 var BOWERPATH = stdout;
-                console.log(stdout);
+                console.debug(stdout);
                 return BOWERPATH;
             }).done(function (BOWERPATH){
 
@@ -141,7 +179,7 @@ define(function (require, exports, module) {
                 });
                 list.then(function (stdout) {
                     var search = JSON.parse(stdout);
-                    console.log(search);
+                    console.debug(search);
                     return search;
                 }).done(function (search) {
 
@@ -195,7 +233,7 @@ define(function (require, exports, module) {
             });
             command.then(function (stdout) {
                 var BOWERPATH = stdout;
-                console.log(stdout);
+                console.debug(stdout);
                 return BOWERPATH;
             }).done(function (BOWERPATH){
 
@@ -208,7 +246,7 @@ define(function (require, exports, module) {
                     var deps = JSON.parse(stdout),
                         depsArray = [],
                         keys = Object.keys(deps.dependencies);
-                    console.log(deps);
+                    console.debug(deps);
 
                     keys.forEach(function (pkg) {
                         //id, manager, primary, secondary, link, data1, data2, data3, status
@@ -263,7 +301,7 @@ define(function (require, exports, module) {
             });
             command.then(function (stdout) {
                 var BOWERPATH = stdout;
-                console.log(stdout);
+                console.debug(stdout);
                 return BOWERPATH;
             }).done(function (BOWERPATH){
 

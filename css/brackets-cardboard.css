@@ -73,7 +73,27 @@ td:nth-child(6) {
     border-left-width: 4px;
 }
 
+/* from brackets-git by FezVrasta */
+.btn-loading, .btn-loading:active {
+  background-size: 30px 30px;
+  background-image: linear-gradient(
+      45deg,
+      rgba(0,0,0,0.1)   25%,
+      transparent       25%,
+      transparent       50%,
+      rgba(0,0,0,0.1)   50%,
+      rgba(0,0,0,0.1)   75%,
+      transparent       75%,
+      transparent
+      );
+  background-repeat: repeat;
+  -webkit-animation: btn-loading 1s linear infinite;
+}
 
+@-webkit-keyframes btn-loading {
+ 0% { background-position: 0 0; }
+ 100% { background-position: 60px 30px; }
+}
 
 /* Toolbar icon */
 .brackets-cardboard-icon {

@@ -238,6 +238,10 @@ define(function (require, exports, module) {
                     $result.removeClass();
                     $result.addClass('brackets-cardboard-result-installed');
                     break;
+                case "uninstalled":
+                    template = require("text!html/installButton.html");
+                    $result.removeClass();
+                    break;
                 default:
                     template = require("text!html/installButton.html");
                     $result.removeClass();
@@ -325,6 +329,8 @@ define(function (require, exports, module) {
                 var id = $(this).parents("tr").attr("data-id"),
                     manager = $(this).parents("tr").attr("data-manager");
 
+                $(this).addClass('btn-loading');
+
                 deferredReduce(Interface.install(manager, id), function (status) {
                     updateResult(status);
                 });
@@ -333,7 +339,7 @@ define(function (require, exports, module) {
                 var id = $(this).parents("tr").attr("data-id"),
                     manager = $(this).parents("tr").attr("data-manager");
 
-                $.when( Interface.update(manager, id) ).then (function (status) {
+                deferredReduce(Interface.update(manager, id), function (status) {
                     updateResult(status);
                 });
             })
@@ -341,7 +347,9 @@ define(function (require, exports, module) {
                 var id = $(this).parents("tr").attr("data-id"),
                     manager = $(this).parents("tr").attr("data-manager");
 
-                $.when( Interface.uninstall(manager, id) ).then (function (status) {
+                $(this).addClass('btn-loading');
+
+                deferredReduce(Interface.uninstall(manager, id), function (status) {
                     updateResult(status);
                 });
             })
