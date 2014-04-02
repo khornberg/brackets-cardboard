@@ -8,14 +8,15 @@
             <td>{{& data2}}</td>
             <td>{{& data3}}</td>
             <td>
-                {{^status}}
+            {{^status}}
+                {{^button}}
                     {{> installButton}}
-                {{/status}}
+                {{/button}}
                  
-                {{#status}}
+                {{#button}}
                     {{> installedButtons}}
-                {{/status}}
-                
+                {{/button}}
+            {{/status}}
             </td>
         </tr>
         {{/results}}

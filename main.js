@@ -50,7 +50,7 @@ define(function (require, exports, module) {
     // waitForIt(Interface.search("PKG"), "search all");
     // waitForIt3(Interface.getInstalled(m[2]), "getInstalled single template");
     // waitForIt(Interface.getInstalled(), "getInstalled all");
-//    testData.openReadme  = Interface.openReadme(testData.getManagers[0], "PACKage");
+    //    testData.openReadme  = Interface.openReadme(testData.getManagers[0], "PACKage");
     // waitForIt3(Interface.getUrl(m[2], "bible.math"), "getUrl");
 
     function waitForIt (promise, msg) {
@@ -76,7 +76,7 @@ define(function (require, exports, module) {
                             // SHOULD BE ADD RESULT ROW
                             if (index === arr.length - 1) {
                                 var r = { "results" : results };
-                                updateResults(r, ".brackets-cardboard-table");
+                                addResults(r, ".brackets-cardboard-table");
                             }
                         });
                     });
@@ -146,8 +146,12 @@ define(function (require, exports, module) {
                     results.push(value);
                 }
 
-                if ((_.isArray(value) || _.isPlainObject(value)) && !_.isArguments(value)) {
+                if (value.length !== 0 && (_.isArray(value) || _.isPlainObject(value)) && !_.isArguments(value)) {
                     deferredReduce(value, callback);
+                }
+
+                if (value.length === 0) {
+                    results.push(value);
                 }
             });
 
@@ -218,7 +222,7 @@ define(function (require, exports, module) {
      * @param  {Object} results     Object with key "results" of array of Results
      * @param  {String} selector    jQuery selector of DOM object to update
      */
-    function updateResults(results, selector) {
+    function addResults(results, selector) {
         var template = require("text!html/results.html"),
             templateInstallButton = require("text!html/installButton.html"),
             templateInstalledButtons = require("text!html/installedButtons.html"),
@@ -271,9 +275,9 @@ define(function (require, exports, module) {
      * @param  {event} event jQuery event
      */
     function search(event) {
-        if(event.which === 13) {
-            var query = $(this).val(),
-                manager = $("#brackets-cardboard-managers .dropdown").attr("data-id");
+        var query = $(this).val();
+        if(event.which === 13 && query !== "") {
+            var manager = $("#brackets-cardboard-managers .dropdown").attr("data-id");
 
             $('.brackets-cardboard-search input').addClass('brackets-cardboard-spinner'); // start spinner
 
@@ -281,14 +285,14 @@ define(function (require, exports, module) {
                 deferredReduce(Interface.search(query), function (results) {
                     var obj = { "results" : results };
 
-                    updateResults(obj, "brackets-cardboard-table");
+                    addResults(obj, "brackets-cardboard-table");
                     $('.brackets-cardboard-search input').removeClass('brackets-cardboard-spinner'); //stop spinner
                 });
             } else {
                 deferredReduce(Interface.search(manager, query), function (results) {
                     var obj = { "results" : results };
 
-                    updateResults(obj, ".brackets-cardboard-table");
+                    addResults(obj, ".brackets-cardboard-table");
                     $('.brackets-cardboard-search input').removeClass('brackets-cardboard-spinner'); //stop spinner
                 });
             }
@@ -357,7 +361,7 @@ define(function (require, exports, module) {
             deferredReduce(Interface.getInstalled(), function (results) {
                 var obj = { "results" : results };
 
-                updateResults(obj, ".brackets-cardboard-table");
+                addResults(obj, ".brackets-cardboard-table");
             });
         }
     }

@@ -2,8 +2,8 @@
 /*global define, $, brackets */
 
 /**
- * Template for modules
- * @module Template
+ * Bower module
+ * @class  bower
  */
 
 define(function (require, exports, module) {
@@ -30,21 +30,21 @@ define(function (require, exports, module) {
     /**
      * To use Node, each command must be wrapped in a done function
      * See domains.js, and the following example:
+     * Node.done(function(nodeComamnd) {
+     *      var ls = nodeComamnd(dir._path, 'ls', ['-l', '-a']);
+     *      ls.fail(function (err) {
+     *          console.log('command failed', err);
+     *      });
+     *      ls.done(function (stdout) {
+     *          console.log(stdout);
+     *      });
+     *   });
      *
      */
 
-     // Node.done(function(nodeComamnd) {
-     //    var ls = nodeComamnd(dir._path, 'ls', ['-l', '-a']);
-     //    ls.fail(function (err) {
-     //        console.log('command failed', err);
-     //    });
-     //    ls.done(function (stdout) {
-     //        console.log(stdout);
-     //    });
-     // });
-
     /**
      * Install command
+     * @memberof bower
      * @param  {String} packageName A unique name of a package/dependency to install
      * @return {Status}             Status object
      */
@@ -94,6 +94,7 @@ define(function (require, exports, module) {
 
     /**
      * Uninstall command
+     * @memberof bower
      * @param  {String} packageName A unique name of a package/dependency to uninstall
      * @return {Status}             Status object
      */
@@ -143,6 +144,7 @@ define(function (require, exports, module) {
 
     /**
      * Update command
+     * @memberof bower
      * @param  {String} packageName A unique name of a package/dependency to update
      * @return {Status}             Status object
      */
@@ -192,6 +194,7 @@ define(function (require, exports, module) {
 
     /**
      * Search for package/dependency
+     * @memberof bower
      * @param  {String} query Search query
      * @return {Array}        Array of Result objects
      */
@@ -227,8 +230,15 @@ define(function (require, exports, module) {
                     console.debug(search);
                     return search;
                 }).done(function (search) {
-
                     var pkgInfo = [];
+
+                    if (search.length === 0) {
+                        // TODO refactor this into a message
+                        console.log('No results for', query);
+                        pkgInfo.push(new Result('', MANAGER, 'No results found', '', '', '', '', '', 'update', 'none'));
+                        deferred.resolve(pkgInfo);
+                        return;
+                    }
 
                     search.forEach(function (pkg) {
                         var info = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'info', pkg.url]);
@@ -248,9 +258,10 @@ define(function (require, exports, module) {
                                 data1     = 'Version ' + (details.latest.version || 'Unknown'),
                                 data2     = 'License ' + (details.latest.license || 'Unknown'),
                                 data3     = '<div class="bower"></div>',
-                                status    = '';
+                                status    = '',
+                                button   = '';
 
-                            pkgDeferred.resolve(new Result(id, MANAGER, primary, secondary, link, data1, data2, data3, status));
+                            pkgDeferred.resolve(new Result(id, MANAGER, primary, secondary, link, data1, data2, data3, status, button));
 
                         }); // info
 
@@ -268,6 +279,7 @@ define(function (require, exports, module) {
 
     /**
      * Lists installed packages/dependencies
+     * @memberof bower
      * @return {Array} Array of Result objects
      */
     function getInstalled () {
@@ -313,9 +325,10 @@ define(function (require, exports, module) {
                             data1     = 'Version ' + (deps.dependencies[pkg].pkgMeta.version || 'Unknown'),
                             data2     = 'License ' + (deps.dependencies[pkg].pkgMeta.license || 'Unknown'),
                             data3     = '',
-                            status    = 'installed';
+                            status    = 'installed',
+                            button    = 'installed';
 
-                        depsArray.push(new Result(id, MANAGER, primary, secondary, link, data1, data2, data3, status));
+                        depsArray.push(new Result(id, MANAGER, primary, secondary, link, data1, data2, data3, status, button));
                     });
 
                     deferred.resolve(depsArray);
@@ -331,6 +344,7 @@ define(function (require, exports, module) {
 
     /**
      * Determines if the manager is available/reachable from brackets-cardboard
+     * @memberof bower
      * @return {Object} Object with keys of manager and displayAs
      */
     function isAvailable () {
@@ -342,6 +356,7 @@ define(function (require, exports, module) {
 
     /**
      * Gets the README URL of a package/dependency
+     * @memberof bower
      * @param  {String} packageName A unique name of a package/dependency
      * @return {String}             README URL of package/dependency
      */
@@ -351,6 +366,7 @@ define(function (require, exports, module) {
 
     /**
      * Gets the URL of a package/dependency
+     * @memberof bower
      * @param  {String} packageName A unique name of a package/dependency
      * @return {String}             URL of package/dependency
      */
