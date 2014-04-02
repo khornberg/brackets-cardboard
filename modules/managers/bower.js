@@ -247,7 +247,7 @@ define(function (require, exports, module) {
                                 link      = details.latest.homepage,
                                 data1     = 'Version ' + (details.latest.version || 'Unknown'),
                                 data2     = 'License ' + (details.latest.license || 'Unknown'),
-                                data3     = '',
+                                data3     = '<div class="bower"></div>',
                                 status    = '';
 
                             pkgDeferred.resolve(new Result(id, MANAGER, primary, secondary, link, data1, data2, data3, status));
