@@ -1,4 +1,4 @@
-/*global require, exports */
+/*global require, exports, Buffer */
 
 /**
  * @author Martin Zagora

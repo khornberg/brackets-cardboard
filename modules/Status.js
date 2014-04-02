@@ -28,5 +28,5 @@ define(function (require, exports, module) {
     Status.prototype.status     = '';
     Status.prototype.message     = '';
 
-   return Status;
+    return Status;
 });

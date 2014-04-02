@@ -42,5 +42,5 @@ define(function (require, exports, module) {
     Result.prototype.data3     = '';
     Result.prototype.status     = '';
     
-   return Result;
+    return Result;
 });

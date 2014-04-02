@@ -24,7 +24,7 @@ define(function (require, exports, module) {
         NAME             = "Bower"; // display name
 
     Node.fail(function (err){
-     console.error('Error with Node', err);
+        console.error('Error with Node', err);
     });
 
     /**
@@ -84,7 +84,7 @@ define(function (require, exports, module) {
                         var status = new Status(response[packageName].endpoint.name, MANAGER, "installed");
                         deferred.resolve(status);
                     }
-                }) // install
+                }); // install
             }); // command
         }); // node
 
@@ -133,7 +133,7 @@ define(function (require, exports, module) {
                         var status = new Status(packageName, MANAGER, "uninstalled");
                         deferred.resolve(status);
                     }
-                }) // uninstall
+                }); // uninstall
             }); // command
         }); // node
 
@@ -182,7 +182,7 @@ define(function (require, exports, module) {
                         var status = new Status(packageName, MANAGER, "updated");
                         deferred.resolve(status);
                     }
-                }) // update
+                }); // update
             }); // command
         }); // node
 

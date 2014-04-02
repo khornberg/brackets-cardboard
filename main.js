@@ -67,7 +67,7 @@ define(function (require, exports, module) {
 
                 e[0][0].then(function (zz) {
                     console.log('mhhah', zz);
-                    var results = []
+                    var results = [];
                     zz.forEach(function (obj, index, arr) {
 
                         obj.done(function (zzz) {
@@ -82,19 +82,19 @@ define(function (require, exports, module) {
                     });
 
                     $.when(zz).done(function () { console.log('when done'); });
-                }).done(function () { console.log("done") });
+                }).done(function () { console.log("done"); });
                 console.log(msg + " promise:", e);
 
-        });
+            });
     }
 
     // to use apply all promises must be in an array
     function waitForIt3 (promiseArray, msg) {
 
         var results = [],
-            promiseArray = (_.isArray(promiseArray)) ? promiseArray : [promiseArray];
+            promises = (_.isArray(promiseArray)) ? promiseArray : [promiseArray];
 
-        $.when.apply($, promiseArray).done(function () {
+        $.when.apply($, promises).done(function () {
             var args = Array.prototype.slice.call(arguments);
 
             args.forEach(function (value) {
@@ -136,9 +136,9 @@ define(function (require, exports, module) {
     function deferredReduce (deferredArray, callback) {
 
         var results = [],
-            deferredArray = (_.isArray(deferredArray)) ? deferredArray : [deferredArray];
+            deferreds = (_.isArray(deferredArray)) ? deferredArray : [deferredArray];
 
-        $.when.apply($, deferredArray).done(function () {
+        $.when.apply($, deferreds).done(function () {
             var args = Array.prototype.slice.call(arguments);
 
             args.forEach(function (value) {
@@ -189,7 +189,7 @@ define(function (require, exports, module) {
 
             for (var i = args.length - 1; i >= 0; i--) {
                 managers.push(args[i]);
-            };
+            }
 
             var template = require("text!html/managers.html"),
                 templateData = _.merge({"available" : managers }, Strings),
@@ -227,26 +227,26 @@ define(function (require, exports, module) {
             templateHtml,
             $result = $("tr[data-id='" + statuses[0].id + "']");
 
-            switch(statuses[0].status) {
-                case "installed":
-                    template = require("text!html/installedButtons.html");
-                    $result.removeClass();
-                    $result.addClass('brackets-cardboard-result-installed');
-                    break;
-                case "updated":
-                    template = require("text!html/installedButtons.html");
-                    $result.removeClass();
-                    $result.addClass('brackets-cardboard-result-installed');
-                    break;
-                case "uninstalled":
-                    template = require("text!html/installButton.html");
-                    $result.removeClass();
-                    break;
-                default:
-                    template = require("text!html/installButton.html");
-                    $result.removeClass();
-            }
-            templateHtml = Mustache.render(template, templateData);
+        switch(statuses[0].status) {
+            case "installed":
+                template = require("text!html/installedButtons.html");
+                $result.removeClass();
+                $result.addClass('brackets-cardboard-result-installed');
+                break;
+            case "updated":
+                template = require("text!html/installedButtons.html");
+                $result.removeClass();
+                $result.addClass('brackets-cardboard-result-installed');
+                break;
+            case "uninstalled":
+                template = require("text!html/installButton.html");
+                $result.removeClass();
+                break;
+            default:
+                template = require("text!html/installButton.html");
+                $result.removeClass();
+        }
+        templateHtml = Mustache.render(template, templateData);
 
         // Add button(s)
         $('td:last-child', $result).html(templateHtml);

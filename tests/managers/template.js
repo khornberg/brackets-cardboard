@@ -23,7 +23,7 @@ define(function (require, exports, module) {
         MANAGER          = "template.js"; //same as your file name
 
     Node.fail(function (err){
-     console.log('Error with Node', err);
+        console.log('Error with Node', err);
     });
 
     /**

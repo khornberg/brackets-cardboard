@@ -169,8 +169,8 @@ define(function (require, exports, module) {
             var deferred = $.Deferred();
 
             require([managerDirectory + managerModule], function (manager) {
-                 deferred.resolve(manager.isAvailable());
-            });
+                    deferred.resolve(manager.isAvailable());
+                });
             available.push(deferred.promise());
         });
         return available;
@@ -202,7 +202,7 @@ define(function (require, exports, module) {
         require([managerDirectory + managerModule], function (manager) {
             deferred.resolve(manager.getUrl(packageName));
         });
-        return deferred.promise()
+        return deferred.promise();
     }
 
     /** Installs package/dependency */

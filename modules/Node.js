@@ -19,7 +19,7 @@ define(function (require, exports, module) {
         nodeDeferred     = new $.Deferred();
 
         // Connects to Node
-        nodeConnection.connect(true).fail(function (err) {
+    nodeConnection.connect(true).fail(function (err) {
             console.log(err, "Failed to connect to Node.js, extension requires Node.js to be installed");
         }).then(function () {
             // Register the domain.
@@ -30,5 +30,5 @@ define(function (require, exports, module) {
             nodeDeferred.resolve(nodeConnection.domains["brackets-cardboard"]);
         }).done();
 
-        return nodeDeferred.promise();
+    return nodeDeferred.promise();
 });
