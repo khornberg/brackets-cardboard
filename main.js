@@ -200,6 +200,20 @@ define(function (require, exports, module) {
     }
 
     /**
+     * Select a manager
+     */
+    function selectManager() {
+        // Changes the manager dropdown text and makes it look like a select box
+        var manager = $(this).attr("data-id"),
+            text =  $(this).text();
+
+        // Change text
+        $(this).parent().prev().html(text + ' <span class="caret"></span>');
+        // Change data-id
+        $(this).parent().prev().attr('data-id', manager);
+    }
+
+    /**
      * Updates the results table on the cardboard panel
      * @param  {Object} results     Object with key "results" of array of Results
      * @param  {String} selector    jQuery selector of DOM object to update
@@ -253,6 +267,109 @@ define(function (require, exports, module) {
     }
 
     /**
+     * Search for a package
+     * @param  {event} event jQuery event
+     */
+    function search(event) {
+        if(event.which === 13) {
+            var query = $(this).val(),
+                manager = $("#brackets-cardboard-managers .dropdown").attr("data-id");
+
+            $('.brackets-cardboard-search input').addClass('brackets-cardboard-spinner'); // start spinner
+
+            if (manager === Strings.SEARCH_ALL) {
+                deferredReduce(Interface.search(query), function (results) {
+                    var obj = { "results" : results };
+
+                    updateResults(obj, "brackets-cardboard-table");
+                    $('.brackets-cardboard-search input').removeClass('brackets-cardboard-spinner'); //stop spinner
+                });
+            } else {
+                deferredReduce(Interface.search(manager, query), function (results) {
+                    var obj = { "results" : results };
+
+                    updateResults(obj, ".brackets-cardboard-table");
+                    $('.brackets-cardboard-search input').removeClass('brackets-cardboard-spinner'); //stop spinner
+                });
+            }
+
+        }
+    }
+
+    /**
+     * Install a package
+     */
+    function install() {
+        var id = $(this).parents("tr").attr("data-id"),
+            manager = $(this).parents("tr").attr("data-manager");
+
+        $(this).addClass('btn-loading');
+
+        deferredReduce(Interface.install(manager, id), function (status) {
+            updateResult(status);
+        });
+    }
+
+    /**
+     * Update a package
+     */
+    function update() {
+        var id = $(this).parents("tr").attr("data-id"),
+            manager = $(this).parents("tr").attr("data-manager");
+
+        deferredReduce(Interface.update(manager, id), function (status) {
+            updateResult(status);
+        });
+    }
+
+    /**
+     * Uninstall a package
+     */
+    function uninstall() {
+        var id = $(this).parents("tr").attr("data-id"),
+            manager = $(this).parents("tr").attr("data-manager");
+
+        $(this).addClass('btn-loading');
+
+        deferredReduce(Interface.uninstall(manager, id), function (status) {
+            updateResult(status);
+        });
+    }
+
+    /**
+     * Shows installed packages
+     */
+    function show() {
+        var $installed = $(".brackets-cardboard-result-installed, .brackets-cardboard-result-update"),
+            $showButton = $("#brackets-cardboard-show"),
+            rows = ($(".brackets-cardboard-table tr").length > 0) ? true : false;
+
+        // results are present (eg. a search performed)
+        if (rows) {
+            $installed.toggle();
+            // toggle button
+            if ($showButton.html() === Strings.HIDE_INSTALLED) {
+                $(this).html(Strings.SHOW_INSTALLED);
+            } else {
+                $(this).html(Strings.HIDE_INSTALLED);
+            }
+        } else { // show only the installed packages
+            deferredReduce(Interface.getInstalled(), function (results) {
+                var obj = { "results" : results };
+
+                updateResults(obj, ".brackets-cardboard-table");
+            });
+        }
+    }
+
+    /**
+     * Clears panel
+     */
+    function clear() {
+        $(".brackets-cardboard-table tr").remove();
+    }
+
+    /**
      * Adds the cardboard panel to brackets
      */
     function addPanel() {
@@ -268,91 +385,13 @@ define(function (require, exports, module) {
             .on( "click", ".close", function () {
                 cardboardTogglePanel(false);
             })
-            .on( "click", "#brackets-cardboard-show", function () {
-                var $installed = $(".brackets-cardboard-result-installed, .brackets-cardboard-result-update"),
-                    $showButton = $("#brackets-cardboard-show"),
-                    rows = ($(".brackets-cardboard-table tr").length > 0) ? true : false;
-
-                // results are present (eg. a search performed)
-                if (rows) {
-                    $installed.toggle();
-                    // toggle button
-                    if ($showButton.html() === Strings.HIDE_INSTALLED) {
-                        $(this).html(Strings.SHOW_INSTALLED);
-                    } else {
-                        $(this).html(Strings.HIDE_INSTALLED);
-                    }
-                } else { // show only the installed packages
-                    deferredReduce(Interface.getInstalled(), function (results) {
-                        var obj = { "results" : results };
-
-                        updateResults(obj, ".brackets-cardboard-table");
-                    });
-                }
-            })
-            .on( "keydown", ".brackets-cardboard-search input", function (event) {
-                if(event.which === 13) {
-                    var query = $(this).val(),
-                        manager = $("#brackets-cardboard-managers .dropdown").attr("data-id");
-
-                    $('.brackets-cardboard-search input').addClass('brackets-cardboard-spinner'); // start spinner
-
-                    if (manager === Strings.SEARCH_ALL) {
-                        deferredReduce(Interface.search(query), function (results) {
-                            var obj = { "results" : results };
-
-                            updateResults(obj, "brackets-cardboard-table");
-                            $('.brackets-cardboard-search input').removeClass('brackets-cardboard-spinner'); //stop spinner
-                        });
-                    } else {
-                        deferredReduce(Interface.search(manager, query), function (results) {
-                            var obj = { "results" : results };
-
-                            updateResults(obj, ".brackets-cardboard-table");
-                            $('.brackets-cardboard-search input').removeClass('brackets-cardboard-spinner'); //stop spinner
-                        });
-                    }
-
-                }
-            })
-            .on( "click", ".brackets-cardboard-manager", function () {
-                // Changes the manager dropdown text and makes it look like a select box
-                var manager = $(this).attr("data-id"),
-                    text =  $(this).text();
-
-                // Change text
-                $(this).parent().prev().html(text + ' <span class="caret"></span>');
-                // Change data-id
-                $(this).parent().prev().attr('data-id', manager);
-            })
-            .on( "click", ".brackets-cardboard-install", function () {
-                var id = $(this).parents("tr").attr("data-id"),
-                    manager = $(this).parents("tr").attr("data-manager");
-
-                $(this).addClass('btn-loading');
-
-                deferredReduce(Interface.install(manager, id), function (status) {
-                    updateResult(status);
-                });
-            })
-            .on( "click", ".brackets-cardboard-update", function () {
-                var id = $(this).parents("tr").attr("data-id"),
-                    manager = $(this).parents("tr").attr("data-manager");
-
-                deferredReduce(Interface.update(manager, id), function (status) {
-                    updateResult(status);
-                });
-            })
-            .on( "click", ".brackets-cardboard-uninstall", function () {
-                var id = $(this).parents("tr").attr("data-id"),
-                    manager = $(this).parents("tr").attr("data-manager");
-
-                $(this).addClass('btn-loading');
-
-                deferredReduce(Interface.uninstall(manager, id), function (status) {
-                    updateResult(status);
-                });
-            })
+            .on( "click", "#brackets-cardboard-show", show)
+            .on( "keydown", ".brackets-cardboard-search input", search)
+            .on( "click", ".brackets-cardboard-manager", selectManager)
+            .on( "click", ".brackets-cardboard-install", install)
+            .on( "click", ".brackets-cardboard-update", update)
+            .on( "click", ".brackets-cardboard-uninstall", uninstall)
+            .on( "click", ".brackets-cardboard-clear", clear)
         ;
     }
 
