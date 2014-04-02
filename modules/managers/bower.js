@@ -61,6 +61,7 @@ define(function (require, exports, module) {
 
             command.fail(function (err) {
                 console.error('Could not get global npm bin path', err);
+                // Return error message
             });
             command.then(function (stdout) {
                 var BOWERPATH = stdout;
@@ -72,6 +73,7 @@ define(function (require, exports, module) {
 
                 install.fail(function (err) {
                     console.error('Could not install bower package', packageName, err);
+                    // Return error message
                 });
                 install.done(function (stdout) {
                     var response = JSON.parse(stdout);
@@ -108,6 +110,7 @@ define(function (require, exports, module) {
 
             command.fail(function (err) {
                 console.error('Could not get global npm bin path', err);
+                // Return error message
             });
             command.then(function (stdout) {
                 var BOWERPATH = stdout;
@@ -118,7 +121,8 @@ define(function (require, exports, module) {
                 var install = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'uninstall', packageName]);
 
                 install.fail(function (err) {
-                    console.error('Could not install bower package', packageName, err);
+                    console.error('Could not uninstall bower package', packageName, err);
+                    // Return error message
                 });
                 install.done(function (stdout) {
                     var response = JSON.parse(stdout);
@@ -129,7 +133,7 @@ define(function (require, exports, module) {
                         var status = new Status(packageName, MANAGER, "uninstalled");
                         deferred.resolve(status);
                     }
-                }) // install
+                }) // uninstall
             }); // command
         }); // node
 
@@ -143,7 +147,47 @@ define(function (require, exports, module) {
      * @return {Status}             Status object
      */
     function update (packageName) {
+        // global node bin path
+        // bower update
 
+        var results = [];
+        var deferred = $.Deferred();
+
+        Node.done(function(nodeCommand) {
+
+            var command = nodeCommand.execute(PATH, 'npm', ['-g', 'bin']);
+
+            command.fail(function (err) {
+                console.error('Could not get global npm bin path', err);
+                // Return error message
+            });
+            command.then(function (stdout) {
+                var BOWERPATH = stdout;
+                console.debug(stdout);
+                return BOWERPATH;
+            }).done(function (BOWERPATH){
+
+                var install = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'update', packageName]);
+
+                install.fail(function (err) {
+                    console.error('Could not update bower package', packageName, err);
+                    // Return error message
+                });
+                install.done(function (stdout) {
+                    var response = JSON.parse(stdout);
+
+                    if ($.isEmptyObject(response)) {
+                        console.log(packageName, "not updated");
+                    } else {
+                        var status = new Status(packageName, MANAGER, "updated");
+                        deferred.resolve(status);
+                    }
+                }) // update
+            }); // command
+        }); // node
+
+        results.push(deferred.promise());
+        return results;
     }
 
     /**
@@ -176,6 +220,7 @@ define(function (require, exports, module) {
 
                 list.fail(function (err) {
                     console.error('Could not list bower packages', err);
+                    // Return error message
                 });
                 list.then(function (stdout) {
                     var search = JSON.parse(stdout);
@@ -196,7 +241,16 @@ define(function (require, exports, module) {
                             var details = JSON.parse(stdout);
 
                             //id, manager, primary, secondary, link, data1, data2, data3, status
-                            pkgDeferred.resolve(new Result(details.latest.name, MANAGER, details.latest.name, details.latest.description, details.latest.homepage, 'Version ' + details.latest.version, 'License ' + details.latest.license, '', ''));
+                            var id        = details.latest.name,
+                                primary   = details.latest.name,
+                                secondary = details.latest.description || '',
+                                link      = details.latest.homepage,
+                                data1     = 'Version ' + (details.latest.version || 'Unknown'),
+                                data2     = 'License ' + (details.latest.license || 'Unknown'),
+                                data3     = '',
+                                status    = '';
+
+                            pkgDeferred.resolve(new Result(id, MANAGER, primary, secondary, link, data1, data2, data3, status));
 
                         }); // info
 
@@ -230,6 +284,7 @@ define(function (require, exports, module) {
 
             command.fail(function (err) {
                 console.error('Could not get global npm bin path', err);
+                // Return error message
             });
             command.then(function (stdout) {
                 var BOWERPATH = stdout;
@@ -241,6 +296,7 @@ define(function (require, exports, module) {
 
                 list.fail(function (err) {
                     console.error('Could not list bower packages', err);
+                    // Return error message
                 });
                 list.done(function (stdout) {
                     var deps = JSON.parse(stdout),
@@ -250,7 +306,16 @@ define(function (require, exports, module) {
 
                     keys.forEach(function (pkg) {
                         //id, manager, primary, secondary, link, data1, data2, data3, status
-                        depsArray.push(new Result(deps.dependencies[pkg].pkgMeta.name, MANAGER, deps.dependencies[pkg].pkgMeta.name, deps.dependencies[pkg].pkgMeta.description, deps.dependencies[pkg].pkgMeta.homepage, 'Version ' + deps.dependencies[pkg].pkgMeta.version, 'License ' + deps.dependencies[pkg].pkgMeta.license, '', 'installed'));
+                        var id        = deps.dependencies[pkg].pkgMeta.name,
+                            primary   = deps.dependencies[pkg].pkgMeta.name,
+                            secondary = deps.dependencies[pkg].pkgMeta.description || '',
+                            link      = deps.dependencies[pkg].pkgMeta.homepage,
+                            data1     = 'Version ' + (deps.dependencies[pkg].pkgMeta.version || 'Unknown'),
+                            data2     = 'License ' + (deps.dependencies[pkg].pkgMeta.license || 'Unknown'),
+                            data3     = '',
+                            status    = 'installed';
+
+                        depsArray.push(new Result(id, MANAGER, primary, secondary, link, data1, data2, data3, status));
                     });
 
                     deferred.resolve(depsArray);
@@ -298,6 +363,7 @@ define(function (require, exports, module) {
 
             command.fail(function (err) {
                 console.error('Could not get global npm bin path', err);
+                // Return error message
             });
             command.then(function (stdout) {
                 var BOWERPATH = stdout;
@@ -309,6 +375,7 @@ define(function (require, exports, module) {
 
                 list.fail(function (err) {
                     console.error('Could not lookup bower package url', err);
+                    // Return error message
                 });
                 list.then(function (stdout) {
                     var search = JSON.parse(stdout);
