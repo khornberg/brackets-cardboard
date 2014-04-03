@@ -12,26 +12,26 @@ This is very early in development. Not everything works. Check the console for m
 
 ## Screenshots
 ![Search](screenshots/search.png "Search for math on bower")
-![List]()
-![Install]()
-![Delete]()
-![Update]()
-
-[Cardboard Mock Preview]()
+![No Results](screenshots/noresults.png "Search for gurnt on npm")
+![Install](screenshots/install.png "Install action")
+![Delete](screenshots/delete.png "Delete action")
+![Update](screenshots/update.png "Update action")
 
 ## TODO
-* Interface (loading graphic, addSingleResult, clearResults, fix bugs to show/hide installed)
+* Interface (fix bugs to show/hide installed packages; the button is currently hidden)
 * Tests (make them, put in unittests)
 * Errors (handle them)
-* Bower manager
 * NPM manager
-* Documentation (jsDoc or something)
-* Preferences (set path varibles, exclude managers, etc)
+* Preferences (set path variables, exclude managers, etc)
 * Load new managers dynamically
 
 ## Contributing
 
-Yes, please. See the TODO list and [CONTRIBUTING](CONTRIBUTING.MD). Report an issue, make a request. All are welcomed.
+Yes, please. See the TODO list and [CONTRIBUTING](CONTRIBUTING.md). Report an issue, make a request. All are welcomed.
+
+## Documentation
+
+[Rudimentary docs are available.](http://khornberg.github.io/brackets-cardboard)
 
 ## Load a new manager
 
@@ -40,7 +40,7 @@ To have Cardboard include a manager by default, send a PR.
 
 ** I want to get to this. Dynamic loading currently doesn't work.**
 
->Open the `managers` folder in this extension fodler and add the file. The easist way to get to the folder is to select `Help->Show Extensions Folder`.
+>Open the `managers` folder in this extension folder and add the file. The easiest way to get to the folder is to select `Help->Show Extensions Folderr`.
 
 >brackets-cardboard loads all the managers in the `modules/managers` extension folder.
 
