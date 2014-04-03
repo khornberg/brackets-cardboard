@@ -1,12 +1,17 @@
 {
-    "name": "brackets-cardboard",
-    "title": "Cardboard",
-    "description": "Manage packages/dependencies for your project.",
-    "homepage": "https://github.com/khornberg/brackets-cardboard",
-    "version": "0.1.0",
-    "author": "Kyle Hornberg <kyle.hornberg@gmail.com> (http://khornberg.github.io) ",
-    "license": "Apache 2.0",
-    "engines": {
-        "brackets": ">=0.36.0"
-    }
+  "name": "brackets-cardboard",
+  "title": "Cardboard",
+  "description": "Manage packages/dependencies for your project.",
+  "homepage": "https://github.com/khornberg/brackets-cardboard",
+  "version": "0.1.0",
+  "author": "Kyle Hornberg <kyle.hornberg@gmail.com> (http://khornberg.github.io) ",
+  "license": "Apache 2.0",
+  "engines": {
+    "brackets": ">=0.36.0"
+  },
+  "devDependencies": {
+    "grunt-gh-pages": "~0.9.1",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-jsdoc": "~0.5.4"
+  }
 }
