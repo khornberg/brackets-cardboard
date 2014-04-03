@@ -11,12 +11,17 @@ define(function (require, exports, module) {
     /**
      * Search result
      * @class Result
+     * @classdesc Represents a resultant package from a search for a manager. 
+     * Each data property can have HTML that is rendered. Be kind. 
+     * The primary property will always be rendered as a link using the link property.
+     * 
+     * @todo  Refactor likely into something less hackish.
      * @param {Stinrg} id        Unique package/dependency name
      * @param {String} manager   Manager name as defined in the `Interface/managerModules` array
      * @param {String} primary   Primary text about the result (eg. A friendly name of a package)
      * @param {String} secondary Secondary text about the result (eg. a description of a package)
      * @param {String} link      Url of a package/dependency
-     * @param {String} data1     Data field (eg. last updated *)
+     * @param {String} data1     Data field (eg. last updated)
      * @param {String} data2     Data field (eg. version)
      * @param {String} data3     Data field (eg. downloads)
      * @param {String} status    Status of result; either an empty string, installed, update, or error

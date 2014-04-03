@@ -2,8 +2,29 @@
 /*global define, $, brackets */
 
 /**
- * Template for modules
+ * Template for managers
  * @class Template
+ * @classdesc Template for managers to follow. Since you are working with nodejs
+ * and most things are asyncronous, return a jQuery deferred (ES6 promises will come when the Chrome
+ * version is updated in brackets). Remember to resolve your deferred. Either resolve a single
+ * object or an array of objects.  
+ *
+ * Take a look at the bower class for examples of this.
+ *
+ * To use Node, each command must be wrapped in a done function
+ *
+ *     Node.done(function(nodeComamnd) {
+ *          var ls = nodeComamnd(dir._path, 'ls', ['-l', '-a']);
+ *          ls.fail(function (err) {
+ *              console.log('command failed', err);
+ *          });
+ *          ls.done(function (stdout) {
+ *              console.log(stdout);
+ *          });
+ *       });
+ *
+ * @see  domain
+ * @see  bower
  */
 
 define(function (require, exports, module) {
@@ -26,21 +47,6 @@ define(function (require, exports, module) {
     Node.fail(function (err){
         console.error('Error with Node', err);
     });
-
-    /**
-     * To use Node, each command must be wrapped in a done function
-     * See domains.js, and the following example:
-     * Node.done(function(nodeComamnd) {
-     *      var ls = nodeComamnd(dir._path, 'ls', ['-l', '-a']);
-     *      ls.fail(function (err) {
-     *          console.log('command failed', err);
-     *      });
-     *      ls.done(function (stdout) {
-     *          console.log(stdout);
-     *      });
-     *   });
-     *
-     */
 
     /**
      * Install command

@@ -4,6 +4,9 @@
 /**
  * Provides the abstract interface for all managers.
  * @class  Interface
+ * @classdesc While not strictly an abstract class in the OOP sense it acts as an interface
+ * between the GUI and manager modules. Managers implement most of the the class methods.
+ * @todo  Dynamically load and add managers
  */
 
 define(function (require, exports, module) {
@@ -18,6 +21,8 @@ define(function (require, exports, module) {
         // managerDirectory    = moduleDirectory + "../tests/managers/",
 
         /**
+         * @example
+         * 
          * Managers are added here by hand currently. Do so by adding the manager file name to the managerModules array.
          * Then add a new variable that follows the present pattern.
          * TODO Dynamically load managers
@@ -25,6 +30,7 @@ define(function (require, exports, module) {
 
         /**
          * The name of the manager file. Include the .js extension. This should also be the name of the manager within the module.
+         * @param managerModules
          * @type {Array}
          */
         // managerModules      = ["example.js", "example2.js", "template.js"];
