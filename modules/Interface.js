@@ -15,7 +15,7 @@ define(function (require, exports, module) {
     // Dependencies
     var ExtensionUtils   = brackets.getModule("utils/ExtensionUtils"),
         moduleDirectory  = ExtensionUtils.getModulePath(module),
-        managerDirectory = moduleDirectory + "/managers/",
+        managerDirectory = moduleDirectory + "managers/",
 
         //Tests directory
         // managerDirectory    = moduleDirectory + "../tests/managers/",
@@ -34,7 +34,7 @@ define(function (require, exports, module) {
          * @type {Array}
          */
         // managerModules      = ["example.js", "example2.js", "template.js"];
-        managerModules      = ["bower.js"];
+        managerModules      = ["bower.js", "npm.js"];
 
     /**
      * Install package/dependency
