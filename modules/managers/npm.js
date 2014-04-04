@@ -101,47 +101,7 @@ define(function (require, exports, module) {
      * @return {Status}             Status object
      */
     function update (packageName) {
-        // global node bin path
-        // bower update
-
-        var results = [];
-        var deferred = $.Deferred();
-
-        Node.done(function(nodeCommand) {
-
-            var command = nodeCommand.execute(PATH, 'npm', ['-g', 'bin']);
-
-            command.fail(function (err) {
-                console.error('Could not get global npm bin path', err);
-                // Return error message
-            });
-            command.then(function (stdout) {
-                var BOWERPATH = stdout;
-                console.debug(stdout);
-                return BOWERPATH;
-            }).done(function (BOWERPATH){
-
-                var install = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'update', packageName]);
-
-                install.fail(function (err) {
-                    console.error('Could not update bower package', packageName, err);
-                    // Return error message
-                });
-                install.done(function (stdout) {
-                    var response = JSON.parse(stdout);
-
-                    if ($.isEmptyObject(response)) {
-                        console.log(packageName, "not updated");
-                    } else {
-                        var status = new Status(packageName, MANAGER, "updated");
-                        deferred.resolve(status);
-                    }
-                }); // update
-            }); // command
-        }); // node
-
-        results.push(deferred.promise());
-        return results;
+        
     }
 
     /**
@@ -241,15 +201,14 @@ define(function (require, exports, module) {
                         status    = 'installed',
                         button    = 'installed';
 
-                    depsArray.push(new Result(id, MANAGER, primary, secondary, link, data1, data2, data3, status, button));
+                    results.push(new Result(id, MANAGER, primary, secondary, link, data1, data2, data3, status, button));
                 });
 
-                deferred.resolve(depsArray);
+                deferred.resolve(results);
             }); // command
         }); // node
 
-        results.push(deferred.promise());
-        return results;
+        return deferred.promise();
     }
 
     // Helper methods
@@ -287,29 +246,15 @@ define(function (require, exports, module) {
 
         Node.done(function(nodeCommand) {
 
-            var command = nodeCommand.execute(PATH, 'npm', ['-g', 'bin']);
+            var command = nodeCommand.execute(PATH, 'npm', ['info', packageName, '--json']);
 
             command.fail(function (err) {
-                console.error('Could not get global npm bin path', err);
+                console.error('Could not get npm info for ' + packageName, err);
                 // Return error message
             });
-            command.then(function (stdout) {
-                var BOWERPATH = stdout;
-                console.debug(stdout);
-                return BOWERPATH;
-            }).done(function (BOWERPATH){
-
-                var list = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'lookup', packageName]);
-
-                list.fail(function (err) {
-                    console.error('Could not lookup bower package url', err);
-                    // Return error message
-                });
-                list.then(function (stdout) {
-                    var search = JSON.parse(stdout);
-                    console.debug(search.url);
-                    deferred.resolve(search.url);
-                });
+            command.done(function (stdout) {
+                var search = JSON.parse(stdout);
+                deferred.resolve(search.homepage);
             });
         });
 
