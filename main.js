@@ -130,9 +130,15 @@ define(function (require, exports, module) {
 
     // Utility Methods
 
-    // Recursively wait on arrays of deferred objects
-    // results are the eventual values of each promise
-    // A call can be given which receives the results of the reduce
+    //
+    //
+    //
+    /**
+     * Recursively wait on single deferred objects or arrays of deferred objects.
+     * @inner  {Array}        results       Eventual values of each promise
+     * @param  {Array}        deferredArray Array of deferred objects
+     * @param  {Function}     callback      Function which receives the results of the reduce
+     */
     function deferredReduce (deferredArray, callback) {
 
         var results = [],
@@ -279,6 +285,8 @@ define(function (require, exports, module) {
         if(event.which === 13 && query !== "") {
             var manager = $("#brackets-cardboard-managers .dropdown").attr("data-id");
 
+            clearPanel();
+
             $('.brackets-cardboard-search input').addClass('brackets-cardboard-spinner'); // start spinner
 
             if (manager === Strings.SEARCH_ALL) {
@@ -286,6 +294,7 @@ define(function (require, exports, module) {
                     var obj = { "results" : results };
 
                     addResults(obj);
+                    //TODO stops when first manager resolves
                     $('.brackets-cardboard-search input').removeClass('brackets-cardboard-spinner'); //stop spinner
                 });
             } else {
@@ -369,7 +378,7 @@ define(function (require, exports, module) {
     /**
      * Clears panel
      */
-    function clear() {
+    function clearPanel() {
         $(".brackets-cardboard-table tr").remove();
     }
 
@@ -395,8 +404,7 @@ define(function (require, exports, module) {
             .on( "click", ".brackets-cardboard-install", install)
             .on( "click", ".brackets-cardboard-update", update)
             .on( "click", ".brackets-cardboard-uninstall", uninstall)
-            .on( "click", ".brackets-cardboard-clear", clear)
-        ;
+            .on( "click", ".brackets-cardboard-clear", clearPanel);
     }
 
     function init () {
