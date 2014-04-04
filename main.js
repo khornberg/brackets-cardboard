@@ -218,7 +218,7 @@ define(function (require, exports, module) {
     }
 
     /**
-     * Updates the results table on the cardboard panel
+     * Adds results to the table on the cardboard panel
      * @param  {Object} results     Object with key "results" of array of Results
      * @param  {String} selector    jQuery selector of DOM object to update
      */
@@ -228,11 +228,11 @@ define(function (require, exports, module) {
             templateInstalledButtons = require("text!html/installedButtons.html"),
             templateData = _.merge(results, Strings),
             templatePartials = { installButton : templateInstallButton, installedButtons : templateInstalledButtons},
-            templateHtml = Mustache.render(template, templateData, templatePartials),
-            $showButton = $('#brackets-cardboard-show');
+            templateHtml = Mustache.render(template, templateData, templatePartials);
+            // $showButton = $('#brackets-cardboard-show');
 
-        $(selector).html(templateHtml);
-        $showButton.html(Strings.HIDE_INSTALLED);
+        $(".brackets-cardboard-table tbody").append(templateHtml);
+        // $showButton.html(Strings.HIDE_INSTALLED);
     }
 
     /**
@@ -285,14 +285,14 @@ define(function (require, exports, module) {
                 deferredReduce(Interface.search(query), function (results) {
                     var obj = { "results" : results };
 
-                    addResults(obj, "brackets-cardboard-table");
+                    addResults(obj);
                     $('.brackets-cardboard-search input').removeClass('brackets-cardboard-spinner'); //stop spinner
                 });
             } else {
                 deferredReduce(Interface.search(manager, query), function (results) {
                     var obj = { "results" : results };
 
-                    addResults(obj, ".brackets-cardboard-table");
+                    addResults(obj);
                     $('.brackets-cardboard-search input').removeClass('brackets-cardboard-spinner'); //stop spinner
                 });
             }
@@ -361,7 +361,7 @@ define(function (require, exports, module) {
             deferredReduce(Interface.getInstalled(), function (results) {
                 var obj = { "results" : results };
 
-                addResults(obj, ".brackets-cardboard-table");
+                addResults(obj);
             });
         }
     }
