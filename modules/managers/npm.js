@@ -34,47 +34,31 @@ define(function (require, exports, module) {
      * @return {Status}             Status object
      */
     function install (packageName) {
-        // global node bin path
-        // bower install
+        // npm install
 
-        var results = [];
         var deferred = $.Deferred();
 
         Node.done(function(nodeCommand) {
 
-            var command = nodeCommand.execute(PATH, 'npm', ['-g', 'bin']);
+            var command = nodeCommand.execute(PATH, 'npm', ['install', packageName, '--json']);
 
             command.fail(function (err) {
-                console.error('Could not get global npm bin path', err);
+                console.error('Could not install' + packageName + 'from npm', err);
                 // Return error message
             });
-            command.then(function (stdout) {
-                var BOWERPATH = stdout;
-                console.debug(stdout);
-                return BOWERPATH;
-            }).done(function (BOWERPATH){
+            command.done(function (stdout){
+                var response = JSON.parse(stdout);
 
-                var install = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'install', packageName]);
-
-                install.fail(function (err) {
-                    console.error('Could not install bower package', packageName, err);
-                    // Return error message
-                });
-                install.done(function (stdout) {
-                    var response = JSON.parse(stdout);
-
-                    if ($.isEmptyObject(response)) {
-                        console.log(packageName, "already installed");
-                    } else {
-                        var status = new Status(response[packageName].endpoint.name, MANAGER, "installed");
-                        deferred.resolve(status);
-                    }
-                }); // install
+                if ($.isEmptyObject(response)) {
+                    console.log(packageName, "already installed");
+                } else {
+                    var status = new Status(response[0].name, MANAGER, "installed");
+                    deferred.resolve(status);
+                }
             }); // command
         }); // node
 
-        results.push(deferred.promise());
-        return results;
+        return deferred.promise();
     }
 
     /**
@@ -84,47 +68,30 @@ define(function (require, exports, module) {
      * @return {Status}             Status object
      */
     function uninstall (packageName) {
-        // global node bin path
-        // bower uninstall
+        // npm uninstall
 
-        var results = [];
         var deferred = $.Deferred();
 
         Node.done(function(nodeCommand) {
-
-            var command = nodeCommand.execute(PATH, 'npm', ['-g', 'bin']);
+            var command = nodeCommand.execute(PATH, 'npm', ['uninstall', packageName, '--json']);
 
             command.fail(function (err) {
-                console.error('Could not get global npm bin path', err);
+                console.error('Could not uninstall' + packageName + 'from npm', err);
                 // Return error message
             });
-            command.then(function (stdout) {
-                var BOWERPATH = stdout;
-                console.debug(stdout);
-                return BOWERPATH;
-            }).done(function (BOWERPATH){
+            command.done(function (stdout){
+                var response = stdout.match(/unbuild/);
 
-                var install = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'uninstall', packageName]);
-
-                install.fail(function (err) {
-                    console.error('Could not uninstall bower package', packageName, err);
-                    // Return error message
-                });
-                install.done(function (stdout) {
-                    var response = JSON.parse(stdout);
-
-                    if ($.isEmptyObject(response)) {
-                        console.log(packageName, "not installed");
-                    } else {
-                        var status = new Status(packageName, MANAGER, "uninstalled");
-                        deferred.resolve(status);
-                    }
-                }); // uninstall
+                if (!response) {
+                    console.log(packageName, "not installed");
+                } else {
+                    var status = new Status(packageName, MANAGER, "uninstalled");
+                    deferred.resolve(status);
+                }
             }); // command
         }); // node
 
-        results.push(deferred.promise());
-        return results;
+        return deferred.promise();
     }
 
     /**
@@ -198,36 +165,43 @@ define(function (require, exports, module) {
                 console.error('Could not search npm', err);
             });
             command.done(function (stdout) {
+                console.debug(stdout);
                 var details = stdout.split('\n').slice(1);
 
+                if (details.length === 0) {
+                    console.log('no npm results');
+                    return;
+                }
+
                 details.forEach(function(line) {
-                    var data = line.match(/\s.*/)[0].split('='),
-                        name = line.split(' ', 1)[0], 
-                        desc = data[0].trim(), 
-                        date = data[1].match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}/)[0], 
-                        version = data[1].match(/\d\.\d\.\d/)[0], 
-                        keywords = data[1].split(/\d\.\d\.\d/)[1].trim().split(' '),
-                        pkg = [name, desc, date, version, keywords];
+                    var name     = line.match(/^[\w-]+/)[0],
+                        desc     = line.match(/\s.*/)[0].split('=')[0].trim(),
+                        authors  = line.match(/=\w*/g).join(', ').replace(/=/g, ''),
+                        date     = line.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}/)[0],
+                        version  = (line.match(/\d*\.\d*\.\d*(-|\.|\w|\d)*/)) ? line.match(/\d*\.\d*\.\d*(-|\.|\w|\d)*/)[0] : '',
+                        keywords = (line.match(/\d*\.\d*\.\d*(-|\.|\w|\d)*$/)) ? '': line.split(/\d*\.\d*\.\d*(-|\.|\w|\d)*\s/).pop().trim(), //version last on the line?
+                        pkg      = [name, desc, authors, date, version, keywords];
 
-                        // //id, manager, primary, secondary, link, data1, data2, data3, status
-                        // var id        = details.latest.name,
-                        //     primary   = details.latest.name,
-                        //     secondary = details.latest.description || '',
-                        //     link      = details.latest.homepage,
-                        //     data1     = 'Version ' + (details.latest.version || 'Unknown'),
-                        //     data2     = 'License ' + (details.latest.license || 'Unknown'),
-                        //     data3     = '<div class="bower"></div>',
-                        //     status    = '',
-                        //     button   = '';
-
-                        // deferred.resolve(new Result(id, MANAGER, primary, secondary, link, data1, data2, data3, status, button));
                         console.debug('npm search', pkg);
-                })
+                        // //id, manager, primary, secondary, link, data1, data2, data3, status
+                        var id        = name,
+                            primary   = name,
+                            secondary = desc,
+                            link      = '',
+                            data1     = 'Version ' + (version || 'Unknown'),
+                            data2     = 'Last updated at: ' + date,
+                            data3     = keywords,
+                            status    = '',
+                            button    = '';
+
+                        results.push(new Result(id, MANAGER, primary, secondary, link, data1, data2, data3, status, button));
+                }) // forEach
+
+                deferred.resolve(results);
             }); // command
         }); // node
 
-        results.push(deferred.promise());
-        return results;
+        return deferred.promise();
     }
 
     /**
@@ -236,56 +210,41 @@ define(function (require, exports, module) {
      * @return {Array} Array of Result objects
      */
     function getInstalled () {
-        // global node bin path
-        // bower list
-        // bower info
+        // npm list
 
         var results = [];
         var deferred = $.Deferred();
 
         Node.done(function(nodeCommand) {
 
-            var command = nodeCommand.execute(PATH, 'npm', ['-g', 'bin']);
+            var command = nodeCommand.execute(PATH, 'npm', ['list', '--json']);
 
             command.fail(function (err) {
-                console.error('Could not get global npm bin path', err);
+                console.error('Could not get dependencies', err);
                 // Return error message
             });
-            command.then(function (stdout) {
-                var BOWERPATH = stdout;
-                console.debug(stdout);
-                return BOWERPATH;
-            }).done(function (BOWERPATH){
+            command.done(function (stdout) {
+                var list = JSON.parse(stdout),
+                    depsArray = [],
+                    keys = Object.keys(list.dependencies);
+                console.debug(keys);
 
-                var list = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'list']);
+                keys.forEach(function (pkg) {
+                    //id, manager, primary, secondary, link, data1, data2, data3, status
+                    var id        = pkg,
+                        primary   = '',
+                        secondary = '',
+                        link      = '',
+                        data1     = 'Version ' + (list.dependencies[pkg].version || 'Unknown'),
+                        data2     = '',
+                        data3     = '',
+                        status    = 'installed',
+                        button    = 'installed';
 
-                list.fail(function (err) {
-                    console.error('Could not list bower packages', err);
-                    // Return error message
+                    depsArray.push(new Result(id, MANAGER, primary, secondary, link, data1, data2, data3, status, button));
                 });
-                list.done(function (stdout) {
-                    var deps = JSON.parse(stdout),
-                        depsArray = [],
-                        keys = Object.keys(deps.dependencies);
-                    console.debug(deps);
 
-                    keys.forEach(function (pkg) {
-                        //id, manager, primary, secondary, link, data1, data2, data3, status
-                        var id        = deps.dependencies[pkg].pkgMeta.name,
-                            primary   = deps.dependencies[pkg].pkgMeta.name,
-                            secondary = deps.dependencies[pkg].pkgMeta.description || '',
-                            link      = deps.dependencies[pkg].pkgMeta.homepage,
-                            data1     = 'Version ' + (deps.dependencies[pkg].pkgMeta.version || 'Unknown'),
-                            data2     = 'License ' + (deps.dependencies[pkg].pkgMeta.license || 'Unknown'),
-                            data3     = '',
-                            status    = 'installed',
-                            button    = 'installed';
-
-                        depsArray.push(new Result(id, MANAGER, primary, secondary, link, data1, data2, data3, status, button));
-                    });
-
-                    deferred.resolve(depsArray);
-                }); // list
+                deferred.resolve(depsArray);
             }); // command
         }); // node
 
