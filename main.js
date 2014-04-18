@@ -68,9 +68,9 @@ define(function (require, exports, module) {
 
     //Deferred returns
     // waitForIt(Interface.getAvailable(), "getAvailable");
-    // var i = Interface.install(m[0], "Package 1");
+    //var i = Interface.install(m[0], "Package 1");
 
-    // wait(i, "install");
+    // waitForIt(Interface.install(m[0], "bible.math"), "install");
     // wait(Interface.uninstall(m[0], "package :( "), "uninstall");
     // wait(Interface.update(m[0], "package ..."), "update");
     // waitForIt(Interface.search(m[1], "PKG"), "seach single");
@@ -317,15 +317,15 @@ define(function (require, exports, module) {
 
     /**
      * Updates a single result on the cardboard results table
-     * @param  {Array} statuses   Array of Status objects
+     * @param  {Array} status  Status object
      */
-    function updateResult(statuses) {
+    function updateResult(status) {
         var template,
             templateData = Strings,
             templateHtml,
-            $result = $("tr[data-id='" + statuses[0].id + "']");
+            $result = $("tr[data-id='" + status.id + "']");
 
-        switch(statuses[0].status) {
+        switch(status.status) {
             case "installed":
                 template = require("text!html/installedButtons.html");
                 $result.removeClass();
@@ -340,6 +340,10 @@ define(function (require, exports, module) {
                 template = require("text!html/installButton.html");
                 $result.removeClass();
                 break;
+            case "error":
+                addError(status, $result);
+                return;
+                break;
             default:
                 template = require("text!html/installButton.html");
                 $result.removeClass();
@@ -348,6 +352,24 @@ define(function (require, exports, module) {
 
         // Add button(s)
         $('td:last-child', $result).html(templateHtml);
+    }
+
+    function addError(status, $result) {
+        var template = require("text!html/error.html"),
+            templateData = _.merge(status, Strings),
+            templateHtml = Mustache.render(template, templateData);
+
+        if($result.length > 0) {
+            $result.removeClass();
+            $result.addClass('brackets-cardboard-result-error');
+            // Add error row
+            $($result).after(templateHtml);
+        } else {
+            $(".brackets-cardboard-table tbody").append(templateHtml);
+        }
+
+        //Remove loading class
+        $($result, ".btn-loading").removeClass('btn-loading');
     }
 
     /**
@@ -407,13 +429,12 @@ define(function (require, exports, module) {
                     status[0].button = "installed";
                 }
                 addStatus({"statuses": status});
-
                 $('.brackets-cardboard-search input').removeClass('brackets-cardboard-spinner'); //stop spinner
             });
         } else {
             $(this).addClass('btn-loading');
             deferredReduce(Interface.install(manager, id), function (status) {
-                updateResult(status);
+                updateResult(status[0]);
             });
         }
     }
@@ -426,7 +447,7 @@ define(function (require, exports, module) {
             manager = $(this).parents("tr").attr("data-manager");
 
         deferredReduce(Interface.update(manager, id), function (status) {
-            updateResult(status);
+            updateResult(status[0]);
         });
     }
 
@@ -440,7 +461,7 @@ define(function (require, exports, module) {
         $(this).addClass('btn-loading');
 
         deferredReduce(Interface.uninstall(manager, id), function (status) {
-            updateResult(status);
+            updateResult(status[0]);
         });
     }
 

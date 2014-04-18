@@ -69,12 +69,14 @@ define(function (require, exports, module) {
                 return BOWERPATH;
             }).done(function (BOWERPATH){
 
-                var install = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'install', packageName]);
+                var install = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'install', 'nopakgeibble']);
 
-                install.fail(function (err) {
-                    console.error('Could not install bower package', packageName, err);
-                    // Return error message
-                });
+                // install.fail(function (err) {
+                //     console.error('Could not install bower package', packageName, err);
+                //     //TODO return a result on error
+                //     var status = new Status(packageName, MANAGER, "error", err[0].message);
+                //     deferred.reject(status);
+                // });
                 install.done(function (stdout) {
                     var response = JSON.parse(stdout);
 
@@ -86,6 +88,12 @@ define(function (require, exports, module) {
                         deferred.resolve(status);
                     }
                 }); // install
+                install.always(function (err) {
+                    console.debug("debug", err);
+                    var response = JSON.parse(err);
+                    var status = new Status(packageName, MANAGER, "error", response[0].message);
+                    deferred.resolve(status);
+                });
             }); // command
         }); // node
 

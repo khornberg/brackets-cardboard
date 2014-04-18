@@ -20,16 +20,16 @@ define(function (require, exports, module) {
      */
     function Status (id, manager, status) {
         //id, manager, status, message
-        this.id         = arguments[0];
-        this.manager    = arguments[1];
-        this.status      = arguments[2];
-        this.message      = arguments[3];
+        this.id      = arguments[0];
+        this.manager = arguments[1];
+        this.status  = arguments[2];
+        this.message = arguments[3];
     }
 
-    Status.prototype.id        = '';
-    Status.prototype.manager   = '';
-    Status.prototype.status     = '';
-    Status.prototype.message     = '';
+    Status.prototype.id      = '';
+    Status.prototype.manager = '';
+    Status.prototype.status  = '';
+    Status.prototype.message = '';
 
     return Status;
 });

@@ -73,6 +73,10 @@ td:nth-child(6) {
     border-left-width: 4px;
 }
 
+.brackets-cardboard-result-error-row td {
+    background-color: rgba(247, 70, 135, 0.85) !important;
+}
+
 /* from brackets-git by FezVrasta */
 .btn-loading, .btn-loading:active {
     background-size: 30px 30px;
