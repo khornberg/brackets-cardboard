@@ -74,7 +74,7 @@ td:nth-child(6) {
 }
 
 .brackets-cardboard-result-error-row td {
-    background-color: rgba(247, 70, 135, 0.85) !important;
+    background-color: rgba(247, 70, 135, 0.55) !important;
 }
 
 /* from brackets-git by FezVrasta */

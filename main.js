@@ -369,7 +369,7 @@ define(function (require, exports, module) {
         }
 
         //Remove loading class
-        $($result, ".btn-loading").removeClass('btn-loading');
+        $result.find(".btn-loading").removeClass('btn-loading');
     }
 
     /**
@@ -511,8 +511,11 @@ define(function (require, exports, module) {
         var $cardboardPanel = $("#brackets-cardboard");
 
         $cardboardPanel
-            .on( "click", ".close", function () {
+            .on( "click", ".brackets-cardboard-close", function () {
                 cardboardTogglePanel(false);
+            })
+            .on( "click", ".brackets-cardboard-close-error", function () {
+                $(this).parents("tr").remove();
             })
             .on( "click", "#brackets-cardboard-show", show)
             .on( "keydown", ".brackets-cardboard-search input", search)
