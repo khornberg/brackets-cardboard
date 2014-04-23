@@ -354,6 +354,11 @@ define(function (require, exports, module) {
         $('td:last-child', $result).html(templateHtml);
     }
 
+    /**
+     * Adds error to the cardboard panel
+     * @param {Status} status Status from manager
+     * @param {jQuery Object} $result Package row that generated the error
+     */
     function addError(status, $result) {
         var template = require("text!html/error.html"),
             templateData = _.merge(status, Strings),
