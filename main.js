@@ -36,6 +36,33 @@ define(function (require, exports, module) {
         panel             = null;
 
 // Tests in lieu of unittest not working-----------------------
+    // isUri tests
+    // github user and repo
+    console.debug("isUri test", isUri('khornberg/brackets-cardboard')); //true
+    console.debug("isUri test", isUri('khornberg-01/khorn-berg.github.io')); //true
+    // git git+ssh, git+http, git+https
+    //           .git at the end (probably ssh shorthand)
+    //           git@ at the start
+    console.debug("isUri test", isUri('git://repo')); //true
+    console.debug("isUri test", isUri('git+ssh://repo')); //true
+    console.debug("isUri test", isUri('git+http://repo')); //true
+    console.debug("isUri test", isUri('git+https://repoSecure')); //true
+    console.debug("isUri test", isUri('securerepo.git')); // true
+    console.debug("isUri test", isUri('git@github.com')); //true
+    // SVN case: svn, svn+ssh, svn+http, svn+https, svn+file
+    console.debug("isUri test", isUri('svn://repos')); //true
+    console.debug("isUri test", isUri('svn+ssh://repos')); //true
+    console.debug("isUri test", isUri('svn+http://repos')); //true
+    console.debug("isUri test", isUri('svn+https://repos')); //true
+    console.debug("isUri test", isUri('svn+file://repos')); //true
+    // URL case
+    console.debug("isUri test", isUri('http://some.url.dev')); //true
+    console.debug("isUri test", isUri('https://some.url.dev')); //true
+    // Path case: ./, ../, ~/
+    console.debug("isUri test", isUri('./code/from/here')); //true
+    console.debug("isUri test", isUri('../code/from/here')); //true
+    console.debug("isUri test", isUri('~/code/from/here')); //true
+    
     var m = Interface.getManagers();
     console.log("returned managers", m);
 
@@ -169,7 +196,43 @@ define(function (require, exports, module) {
     }
 
 
+    
+    /**    
+     * Deterimes if source is a URI.    
+     * @param {String} source URI    
+     * @returns {Boolean}    
+     */
+    function isUri(source) {
+        // Likely a github user and repo
+        // False positive when starting with a dash (-), which Github doesn't allow
+        if (/^[\w\-]*\/[\w\-]*/i.test(source)) {
+            return true;
+        }
+        
+        // Git case: git git+ssh, git+http, git+https
+        //           .git at the end (probably ssh shorthand)
+        //           git@ at the start
+        if (/^git(\+(ssh|https?))?:\/\//i.test(source) || /\.git\/?$/i.test(source) || /^git@/i.test(source)) {
+            return true;
+        }
 
+        // SVN case: svn, svn+ssh, svn+http, svn+https, svn+file
+        if (/^svn(\+(ssh|https?|file))?:\/\//i.test(source)) {
+            return true;
+        }
+
+        // URL case
+        if (/^https?:\/\//i.test(source)) {
+            return true;
+        }
+        
+        // Path case: ./, ../, ~/
+        if (/^\.\.?[\/\\]/.test(source) || /^~\//.test(source)) {
+            return true;
+        }
+            
+        return false;
+    }
 
     // UI Methods
 
@@ -289,6 +352,13 @@ define(function (require, exports, module) {
 
             $('.brackets-cardboard-search input').addClass('brackets-cardboard-spinner'); // start spinner
 
+            var uriRegEx = /(http|https|git):\/\/\w+/,
+                uri = uriRegEx.test(query);
+            
+            if (uri) {
+                   
+            }
+            
             if (manager === Strings.SEARCH_ALL) {
                 deferredReduce(Interface.search(query), function (results) {
                     var obj = { "results" : results };
