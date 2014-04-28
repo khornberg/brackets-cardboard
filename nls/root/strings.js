@@ -10,7 +10,7 @@ define({
     "SHOW_INSTALLED" : "Show Installed",
     "HIDE_INSTALLED" : "Hide Installed",
     "REPORT_BUG" : "Report Bug",
-    "SEARCH_PLACEHOLDER" : "Search",
+    "SEARCH_PLACEHOLDER" : "Search or install uri",
     "SEARCH_ALL" : "All Managers",
     "INSTALL" : "Install",
 });
