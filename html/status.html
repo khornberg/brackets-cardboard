@@ -1,0 +1,19 @@
+
+        {{#statuses}}
+        <tr data-id="{{id}}" data-manager="{{manager}}" {{#status}}class="brackets-cardboard-result-{{status}}"{{/status}}>
+            <td><a href="{{link}}">{{id}}</a></td>
+            <td>{{message}}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+            {{^button}}
+                {{> installButton}}
+            {{/button}}
+
+            {{#button}}
+                {{> installedButtons}}
+            {{/button}}
+            </td>
+        </tr>
+        {{/statuses}}

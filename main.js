@@ -304,6 +304,17 @@ define(function (require, exports, module) {
         // $showButton.html(Strings.HIDE_INSTALLED);
     }
 
+    function addStatus(status) {
+        var template = require("text!html/status.html"),
+            templateInstallButton = require("text!html/installButton.html"),
+            templateInstalledButtons = require("text!html/installedButtons.html"),
+            templateData = _.merge(status, Strings),
+            templatePartials = { installButton : templateInstallButton, installedButtons : templateInstalledButtons},
+            templateHtml = Mustache.render(template, templateData, templatePartials);
+
+        $(".brackets-cardboard-table tbody").append(templateHtml);
+    }
+
     /**
      * Updates a single result on the cardboard results table
      * @param  {Array} statuses   Array of Status objects
@@ -346,20 +357,22 @@ define(function (require, exports, module) {
     function search(event) {
         var query = $(this).val();
         if(event.which === 13 && query !== "") {
-            var manager = $("#brackets-cardboard-managers .dropdown").attr("data-id");
+            var manager = $("#brackets-cardboard-managers .dropdown").attr("data-id"),
+                uri = isUri(query);
 
             clearPanel();
 
             $('.brackets-cardboard-search input').addClass('brackets-cardboard-spinner'); // start spinner
-
-            var uriRegEx = /(http|https|git):\/\/\w+/,
-                uri = uriRegEx.test(query);
             
-            if (uri) {
-                   
+            if (uri && manager !== undefined) {
+                install(query, manager);
+                return;
+            } else if (uri && manager === undefined) {
+                $('.brackets-cardboard-search input').removeClass('brackets-cardboard-spinner'); //stop spinner
+                return;
             }
             
-            if (manager === Strings.SEARCH_ALL) {
+            if (manager === undefined) {
                 deferredReduce(Interface.search(query), function (results) {
                     var obj = { "results" : results };
 
@@ -381,16 +394,28 @@ define(function (require, exports, module) {
 
     /**
      * Install a package
+     * @param  {string} uri Install uri
+     * @param  {string} uriManager   Manager to use to install uri package. From manager list.
      */
-    function install() {
-        var id = $(this).parents("tr").attr("data-id"),
-            manager = $(this).parents("tr").attr("data-manager");
+    function install(uri, uriManager) {
+        var id = uri || $(this).parents("tr").attr("data-id"),
+            manager = uriManager || $(this).parents("tr").attr("data-manager");
 
-        $(this).addClass('btn-loading');
+        if (uri) {
+            deferredReduce(Interface.install(manager, id), function (status) {
+                if (status[0].status === "installed") {
+                    status[0].button = "installed";
+                }
+                addStatus({"statuses": status});
 
-        deferredReduce(Interface.install(manager, id), function (status) {
-            updateResult(status);
-        });
+                $('.brackets-cardboard-search input').removeClass('brackets-cardboard-spinner'); //stop spinner
+            });
+        } else {
+            $(this).addClass('btn-loading');
+            deferredReduce(Interface.install(manager, id), function (status) {
+                updateResult(status);
+            });
+        }
     }
 
     /**

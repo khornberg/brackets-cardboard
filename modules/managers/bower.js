@@ -81,7 +81,8 @@ define(function (require, exports, module) {
                     if ($.isEmptyObject(response)) {
                         console.log(packageName, "already installed");
                     } else {
-                        var status = new Status(response[packageName].endpoint.name, MANAGER, "installed");
+                        var keys = Object.keys(response);
+                        var status = new Status(response[keys[0]].endpoint.name, MANAGER, "installed");
                         deferred.resolve(status);
                     }
                 }); // install
