@@ -13,4 +13,5 @@ define({
     "SEARCH_PLACEHOLDER" : "Search or install uri",
     "SEARCH_ALL" : "All Managers",
     "INSTALL" : "Install",
+    "DIALOG_OK" : "Ok",
 });

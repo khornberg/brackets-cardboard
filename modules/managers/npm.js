@@ -1,5 +1,5 @@
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, regexp: true, indent: 4, maxerr: 50 */
-/*global define, $, brackets */
+/*global define, $, brackets, Mustache */
 
 /**
  * npm module
@@ -13,8 +13,12 @@ define(function (require, exports, module) {
     var NodeConnection = brackets.getModule("utils/NodeConnection"),
         ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
         ProjectManager = brackets.getModule("project/ProjectManager"),
+        Dialogs        = brackets.getModule("widgets/Dialogs"),
+        _              = brackets.getModule("thirdparty/lodash"),
 
+        Strings          = require("strings"),
         projectDirectory = ProjectManager.getProjectRoot(),
+        errorTemplate    = require("text!html/errorModal.html"),
         Node             = require("modules/Node"),
         Result           = require("modules/Result"),
         Status           = require("modules/Status"),
@@ -45,6 +49,7 @@ define(function (require, exports, module) {
             command.fail(function (err) {
                 console.error('Could not install' + packageName + 'from npm', err);
                 // Return error message
+                showModal(err);
             });
             command.done(function (stdout){
                 var response = JSON.parse(stdout);
@@ -78,6 +83,7 @@ define(function (require, exports, module) {
             command.fail(function (err) {
                 console.error('Could not uninstall' + packageName + 'from npm', err);
                 // Return error message
+                showModal(err);
             });
             command.done(function (stdout){
                 var response = stdout.match(/unbuild/);
@@ -123,6 +129,7 @@ define(function (require, exports, module) {
 
             command.fail(function (err) {
                 console.error('Could not search npm', err);
+                showModal(err);
             });
             command.done(function (stdout) {
                 console.debug(stdout);
@@ -142,20 +149,20 @@ define(function (require, exports, module) {
                         keywords = (line.match(/\d*\.\d*\.\d*(-|\.|\w|\d)*$/)) ? '': line.split(/\d*\.\d*\.\d*(-|\.|\w|\d)*\s/).pop().trim(), //version last on the line?
                         pkg      = [name, desc, authors, date, version, keywords];
 
-                        console.debug('npm search', pkg);
-                        // //id, manager, primary, secondary, link, data1, data2, data3, status
-                        var id        = name,
-                            primary   = name,
-                            secondary = desc,
-                            link      = '',
-                            data1     = 'Version ' + (version || 'Unknown'),
-                            data2     = 'Last updated at: ' + date,
-                            data3     = keywords,
-                            status    = '',
-                            button    = '';
+                    console.debug('npm search', pkg);
+                    // //id, manager, primary, secondary, link, data1, data2, data3, status
+                    var id        = name,
+                        primary   = name,
+                        secondary = desc,
+                        link      = '',
+                        data1     = 'Version ' + (version || 'Unknown'),
+                        data2     = 'Last updated at: ' + date,
+                        data3     = keywords,
+                        status    = '',
+                        button    = '';
 
-                        results.push(new Result(id, MANAGER, primary, secondary, link, data1, data2, data3, status, button));
-                }) // forEach
+                    results.push(new Result(id, MANAGER, primary, secondary, link, data1, data2, data3, status, button));
+                }); // forEach
 
                 deferred.resolve(results);
             }); // command
@@ -182,6 +189,7 @@ define(function (require, exports, module) {
             command.fail(function (err) {
                 console.error('Could not get dependencies', err);
                 // Return error message
+                showModal(err);
             });
             command.done(function (stdout) {
                 var list = JSON.parse(stdout),
@@ -251,6 +259,8 @@ define(function (require, exports, module) {
             command.fail(function (err) {
                 console.error('Could not get npm info for ' + packageName, err);
                 // Return error message
+                showModal(err);
+
             });
             command.done(function (stdout) {
                 var search = JSON.parse(stdout);
@@ -259,6 +269,13 @@ define(function (require, exports, module) {
         });
 
         return deferred.promise();
+    }
+
+    function showModal (err) {
+        var errorText = {"ERROR_TITLE" : MANAGER + " error" , "ERROR_MESSAGE" : err},
+            text = _.merge(errorText, Strings),
+            errorModal = Mustache.render(errorTemplate, text);
+        Dialogs.showModalDialogUsingTemplate(errorModal);
     }
 
     exports.install      = install;

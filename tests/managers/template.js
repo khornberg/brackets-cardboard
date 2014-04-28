@@ -1,5 +1,5 @@
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, regexp: true, indent: 4, maxerr: 50 */
-/*global define, $, brackets */
+/*global define, $, brackets, Mustache */
 
 /**
  * Template for managers
@@ -34,8 +34,12 @@ define(function (require, exports, module) {
     var NodeConnection = brackets.getModule("utils/NodeConnection"),
         ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
         ProjectManager = brackets.getModule("project/ProjectManager"),
+        Dialogs        = brackets.getModule("widgets/Dialogs"),
+        _              = brackets.getModule("thirdparty/lodash"),
 
+        Strings          = require("strings"),
         projectDirectory = ProjectManager.getProjectRoot(),
+        errorTemplate    = require("text!html/errorModal.html"),
         Node             = require("modules/Node"),
         Result           = require("modules/Result"),
         Status           = require("modules/Status"),
@@ -129,6 +133,18 @@ define(function (require, exports, module) {
      */
     function getUrl (packageName) {
 
+    }
+
+
+    /**
+     * Show error message in a modal
+     * @param {string} err Error message
+     */
+    function showModal (err) {
+        var errorText = {"ERROR_TITLE" : MANAGER + " error" , "ERROR_MESSAGE" : err},
+            text = _.merge(errorText, Strings),
+            errorModal = Mustache.render(errorTemplate, text);
+        Dialogs.showModalDialogUsingTemplate(errorModal);
     }
 
     exports.install      = install;

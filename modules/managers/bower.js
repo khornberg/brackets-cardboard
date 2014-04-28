@@ -1,5 +1,5 @@
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, regexp: true, indent: 4, maxerr: 50 */
-/*global define, $, brackets */
+/*global define, $, brackets, Mustache */
 
 /**
  * Bower module
@@ -13,8 +13,12 @@ define(function (require, exports, module) {
     var NodeConnection = brackets.getModule("utils/NodeConnection"),
         ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
         ProjectManager = brackets.getModule("project/ProjectManager"),
+        Dialogs        = brackets.getModule("widgets/Dialogs"),
+        _              = brackets.getModule("thirdparty/lodash"),
 
+        Strings          = require("strings"),
         projectDirectory = ProjectManager.getProjectRoot(),
+        errorTemplate    = require("text!html/errorModal.html"),
         Node             = require("modules/Node"),
         Result           = require("modules/Result"),
         Status           = require("modules/Status"),
@@ -61,7 +65,7 @@ define(function (require, exports, module) {
 
             command.fail(function (err) {
                 console.error('Could not get global npm bin path', err);
-                // Return error message
+                showModal(err);
             });
             command.then(function (stdout) {
                 var BOWERPATH = stdout;
@@ -69,7 +73,7 @@ define(function (require, exports, module) {
                 return BOWERPATH;
             }).done(function (BOWERPATH){
 
-                var install = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'install', 'nopakgeibble']);
+                var install = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'install', packageName]);
 
                 // install.fail(function (err) {
                 //     console.error('Could not install bower package', packageName, err);
@@ -87,13 +91,13 @@ define(function (require, exports, module) {
                         var status = new Status(response[keys[0]].endpoint.name, MANAGER, "installed");
                         deferred.resolve(status);
                     }
-                }); // install
+                });
                 install.always(function (err) {
                     console.debug("debug", err);
                     var response = JSON.parse(err);
                     var status = new Status(packageName, MANAGER, "error", response[0].message);
                     deferred.resolve(status);
-                });
+                }); // install
             }); // command
         }); // node
 
@@ -121,6 +125,7 @@ define(function (require, exports, module) {
             command.fail(function (err) {
                 console.error('Could not get global npm bin path', err);
                 // Return error message
+                showModal(err);
             });
             command.then(function (stdout) {
                 var BOWERPATH = stdout;
@@ -133,6 +138,7 @@ define(function (require, exports, module) {
                 install.fail(function (err) {
                     console.error('Could not uninstall bower package', packageName, err);
                     // Return error message
+                    showModal(err);
                 });
                 install.done(function (stdout) {
                     var response = JSON.parse(stdout);
@@ -143,7 +149,13 @@ define(function (require, exports, module) {
                         var status = new Status(packageName, MANAGER, "uninstalled");
                         deferred.resolve(status);
                     }
-                }); // uninstall
+                });
+                install.always(function (err) {
+                    console.debug("debug", err);
+                    var response = JSON.parse(err);
+                    var status = new Status(packageName, MANAGER, "error", response[0].message);
+                    deferred.resolve(status);
+                });// uninstall
             }); // command
         }); // node
 
@@ -171,6 +183,7 @@ define(function (require, exports, module) {
             command.fail(function (err) {
                 console.error('Could not get global npm bin path', err);
                 // Return error message
+                showModal(err);
             });
             command.then(function (stdout) {
                 var BOWERPATH = stdout;
@@ -183,6 +196,7 @@ define(function (require, exports, module) {
                 install.fail(function (err) {
                     console.error('Could not update bower package', packageName, err);
                     // Return error message
+                    showModal(err);
                 });
                 install.done(function (stdout) {
                     var response = JSON.parse(stdout);
@@ -193,6 +207,12 @@ define(function (require, exports, module) {
                         var status = new Status(packageName, MANAGER, "updated");
                         deferred.resolve(status);
                     }
+                });
+                install.always(function (err) {
+                    console.debug("debug", err);
+                    var response = JSON.parse(err);
+                    var status = new Status(packageName, MANAGER, "error", response[0].message);
+                    deferred.resolve(status);
                 }); // update
             }); // command
         }); // node
@@ -221,6 +241,7 @@ define(function (require, exports, module) {
 
             command.fail(function (err) {
                 console.error('Could not get global npm bin path', err);
+                showModal(err);
             });
             command.then(function (stdout) {
                 var BOWERPATH = stdout;
@@ -233,13 +254,13 @@ define(function (require, exports, module) {
                 list.fail(function (err) {
                     console.error('Could not list bower packages', err);
                     // Return error message
+                    showModal(err);
                 });
-                list.then(function (stdout) {
-                    var search = JSON.parse(stdout);
+                list.done(function (stdout) {
+                    var search = JSON.parse(stdout),
+                        pkgInfo = [];
+
                     console.debug(search);
-                    return search;
-                }).done(function (search) {
-                    var pkgInfo = [];
 
                     if (search.length === 0) {
                         // TODO refactor this into a message
@@ -306,6 +327,7 @@ define(function (require, exports, module) {
             command.fail(function (err) {
                 console.error('Could not get global npm bin path', err);
                 // Return error message
+                showModal(err);
             });
             command.then(function (stdout) {
                 var BOWERPATH = stdout;
@@ -318,6 +340,7 @@ define(function (require, exports, module) {
                 list.fail(function (err) {
                     console.error('Could not list bower packages', err);
                     // Return error message
+                    showModal(err);
                 });
                 list.done(function (stdout) {
                     var deps = JSON.parse(stdout),
@@ -389,6 +412,7 @@ define(function (require, exports, module) {
             command.fail(function (err) {
                 console.error('Could not get global npm bin path', err);
                 // Return error message
+                showModal(err);
             });
             command.then(function (stdout) {
                 var BOWERPATH = stdout;
@@ -401,6 +425,7 @@ define(function (require, exports, module) {
                 list.fail(function (err) {
                     console.error('Could not lookup bower package url', err);
                     // Return error message
+                    showModal(err);
                 });
                 list.then(function (stdout) {
                     var search = JSON.parse(stdout);
@@ -411,6 +436,13 @@ define(function (require, exports, module) {
         });
 
         return deferred.promise();
+    }
+
+    function showModal (err) {
+        var errorText = {"ERROR_TITLE" : MANAGER + " error" , "ERROR_MESSAGE" : err},
+            text = _.merge(errorText, Strings),
+            errorModal = Mustache.render(errorTemplate, text);
+        Dialogs.showModalDialogUsingTemplate(errorModal);
     }
 
     exports.install      = install;
