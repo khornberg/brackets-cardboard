@@ -138,8 +138,8 @@ define(function (require, exports, module) {
 
                 if (details.length === 0) {
                     console.log('no npm results');
-                    pkgInfo.push(new Result('', MANAGER, 'No results found for ' + query, '', SEARCH_URL, '', '', '', 'update', 'none'));
-                    deferred.resolve(pkgInfo);
+                    results.push(new Result('', MANAGER, 'No results found for ' + query, '', SEARCH_URL, '', '', '', 'update', 'none'));
+                    deferred.resolve(results);
                     return;
                 }
 

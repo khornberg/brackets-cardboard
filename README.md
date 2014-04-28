@@ -14,8 +14,9 @@ This is very early in development. Not everything works. Check the console for m
 ![Search](screenshots/search.png "Search for math on bower")
 ![No Results](screenshots/noresults.png "Search for gurnt on npm")
 ![Install](screenshots/install.png "Install action")
+![Install by URI](screenshots/installuri.png "Install by URI")
 ![Delete](screenshots/delete.png "Delete action")
-![Update](screenshots/update.png "Update action")
+
 
 ## TODO
 * Interface (fix bugs to show/hide installed packages; the button is currently hidden)
