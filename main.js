@@ -1,5 +1,5 @@
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, regexp: true, indent: 4, maxerr: 50 */
-/*global define, $, brackets, Mustache, _ */
+/*global define, $, brackets, Mustache */
 
 /**
     brackets-cardboard Brackets Cardboard Extension
@@ -38,33 +38,33 @@ define(function (require, exports, module) {
 // Tests in lieu of unittest not working-----------------------
     // isUri tests
     // github user and repo
-    console.debug("isUri test", isUri('khornberg/brackets-cardboard')); //true
-    console.debug("isUri test", isUri('khornberg-01/khorn-berg.github.io')); //true
-    // git git+ssh, git+http, git+https
-    //           .git at the end (probably ssh shorthand)
-    //           git@ at the start
-    console.debug("isUri test", isUri('git://repo')); //true
-    console.debug("isUri test", isUri('git+ssh://repo')); //true
-    console.debug("isUri test", isUri('git+http://repo')); //true
-    console.debug("isUri test", isUri('git+https://repoSecure')); //true
-    console.debug("isUri test", isUri('securerepo.git')); // true
-    console.debug("isUri test", isUri('git@github.com')); //true
-    // SVN case: svn, svn+ssh, svn+http, svn+https, svn+file
-    console.debug("isUri test", isUri('svn://repos')); //true
-    console.debug("isUri test", isUri('svn+ssh://repos')); //true
-    console.debug("isUri test", isUri('svn+http://repos')); //true
-    console.debug("isUri test", isUri('svn+https://repos')); //true
-    console.debug("isUri test", isUri('svn+file://repos')); //true
-    // URL case
-    console.debug("isUri test", isUri('http://some.url.dev')); //true
-    console.debug("isUri test", isUri('https://some.url.dev')); //true
-    // Path case: ./, ../, ~/
-    console.debug("isUri test", isUri('./code/from/here')); //true
-    console.debug("isUri test", isUri('../code/from/here')); //true
-    console.debug("isUri test", isUri('~/code/from/here')); //true
-    
-    var m = Interface.getManagers();
-    console.log("returned managers", m);
+//    console.debug("isUri test", isUri('khornberg/brackets-cardboard')); //true
+//    console.debug("isUri test", isUri('khornberg-01/khorn-berg.github.io')); //true
+//    // git git+ssh, git+http, git+https
+//    //           .git at the end (probably ssh shorthand)
+//    //           git@ at the start
+//    console.debug("isUri test", isUri('git://repo')); //true
+//    console.debug("isUri test", isUri('git+ssh://repo')); //true
+//    console.debug("isUri test", isUri('git+http://repo')); //true
+//    console.debug("isUri test", isUri('git+https://repoSecure')); //true
+//    console.debug("isUri test", isUri('securerepo.git')); // true
+//    console.debug("isUri test", isUri('git@github.com')); //true
+//    // SVN case: svn, svn+ssh, svn+http, svn+https, svn+file
+//    console.debug("isUri test", isUri('svn://repos')); //true
+//    console.debug("isUri test", isUri('svn+ssh://repos')); //true
+//    console.debug("isUri test", isUri('svn+http://repos')); //true
+//    console.debug("isUri test", isUri('svn+https://repos')); //true
+//    console.debug("isUri test", isUri('svn+file://repos')); //true
+//    // URL case
+//    console.debug("isUri test", isUri('http://some.url.dev')); //true
+//    console.debug("isUri test", isUri('https://some.url.dev')); //true
+//    // Path case: ./, ../, ~/
+//    console.debug("isUri test", isUri('./code/from/here')); //true
+//    console.debug("isUri test", isUri('../code/from/here')); //true
+//    console.debug("isUri test", isUri('~/code/from/here')); //true
+//    
+//    var m = Interface.getManagers();
+//    console.log("returned managers", m);
 
     //Deferred returns
     // waitForIt(Interface.getAvailable(), "getAvailable");
@@ -157,9 +157,6 @@ define(function (require, exports, module) {
 
     // Utility Methods
 
-    //
-    //
-    //
     /**
      * Recursively wait on single deferred objects or arrays of deferred objects.
      * @inner  {Array}        results       Eventual values of each promise
@@ -248,6 +245,7 @@ define(function (require, exports, module) {
         else {
             panel.show();
             $icon.addClass("active");
+            $(".brackets-cardboard-search input").focus();
             CommandManager.get(COMMAND_ID).setChecked(true);
         }
     }
