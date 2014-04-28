@@ -289,7 +289,7 @@ define(function (require, exports, module) {
      * @param  {Object} results     Object with key "results" of array of Results
      * @param  {String} selector    jQuery selector of DOM object to update
      */
-    function addResults(results, selector) {
+    function addResults(results) {
         var template = require("text!html/results.html"),
             templateInstallButton = require("text!html/installButton.html"),
             templateInstalledButtons = require("text!html/installedButtons.html"),
@@ -419,11 +419,12 @@ define(function (require, exports, module) {
 
     /**
      * Install a package
-     * @param  {string} uri Install uri
+     * @param  {string} queryUri     Install URI string from search box
      * @param  {string} uriManager   Manager to use to install uri package. From manager list.
      */
-    function install(uri, uriManager) {
-        var id = uri || $(this).parents("tr").attr("data-id"),
+    function install(queryUri, uriManager) {
+        var uri = (typeof queryUri === "string") ? queryUri : false,
+            id =  uri || $(this).parents("tr").attr("data-id"),
             manager = uriManager || $(this).parents("tr").attr("data-manager");
 
         if (uri) {
