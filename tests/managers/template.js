@@ -46,7 +46,8 @@ define(function (require, exports, module) {
         DOMAIN           = "brackets-cardboard",
         PATH             = projectDirectory._path,
         MANAGER          = "template.js", //same as your file name
-        NAME             = "Template"; //display name
+        NAME             = "Template", //display name
+        SEARCH_URL       = "http://manager/search"; // link URL when no results found
 
     Node.fail(function (err){
         console.error('Error with Node', err);

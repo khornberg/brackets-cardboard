@@ -25,7 +25,8 @@ define(function (require, exports, module) {
         DOMAIN           = "brackets-cardboard",
         PATH             = projectDirectory._path,
         MANAGER          = "bower.js", //same as your file name
-        NAME             = "Bower"; // display name
+        NAME             = "Bower", // display name
+        SEARCH_URL       = "http://bower.io/search";
 
     Node.fail(function (err){
         console.error('Error with Node', err);
@@ -75,12 +76,13 @@ define(function (require, exports, module) {
 
                 var install = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'install', packageName]);
 
-                // install.fail(function (err) {
-                //     console.error('Could not install bower package', packageName, err);
-                //     //TODO return a result on error
-                //     var status = new Status(packageName, MANAGER, "error", err[0].message);
-                //     deferred.reject(status);
-                // });
+                 install.fail(function (err) {
+                     console.error('Could not install bower package', packageName, err);
+                     //TODO return a result on error
+//                     showModal(err);
+//                     var status = new Status(packageName, MANAGER, "error", err[0].message);
+//                     deferred.reject(status);
+                 });
                 install.done(function (stdout) {
                     var response = JSON.parse(stdout);
 
@@ -265,7 +267,7 @@ define(function (require, exports, module) {
                     if (search.length === 0) {
                         // TODO refactor this into a message
                         console.log('No results for', query);
-                        pkgInfo.push(new Result('', MANAGER, 'No results found', '', '', '', '', '', 'update', 'none'));
+                        pkgInfo.push(new Result('', MANAGER, 'No results found for ' + query, '', SEARCH_URL, '', '', '', 'update', 'none'));
                         deferred.resolve(pkgInfo);
                         return;
                     }

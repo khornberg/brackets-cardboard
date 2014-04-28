@@ -25,7 +25,8 @@ define(function (require, exports, module) {
         DOMAIN           = "brackets-cardboard",
         PATH             = projectDirectory._path,
         MANAGER          = "npm.js", //same as your file name
-        NAME             = "npm"; // display name
+        NAME             = "npm", // display name
+        SEARCH_URL       = "https://www.npmjs.org/";
 
     Node.fail(function (err){
         console.error('Error with Node', err);
@@ -137,6 +138,8 @@ define(function (require, exports, module) {
 
                 if (details.length === 0) {
                     console.log('no npm results');
+                    pkgInfo.push(new Result('', MANAGER, 'No results found for ' + query, '', SEARCH_URL, '', '', '', 'update', 'none'));
+                    deferred.resolve(pkgInfo);
                     return;
                 }
 
