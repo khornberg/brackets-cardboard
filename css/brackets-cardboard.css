@@ -30,27 +30,27 @@
     right: 25px; 
 }
 
-td:nth-child(1) {
+.brackets-cardboard-table td:nth-child(1) {
     width: 20%;
 }
 
-td:nth-child(2) {
+.brackets-cardboard-table td:nth-child(2) {
     width: 40%;
 }
 
-td:nth-child(3) {
+.brackets-cardboard-table td:nth-child(3) {
     width: 10%;
 }
 
-td:nth-child(4) {
+.brackets-cardboard-table td:nth-child(4) {
     width: 10%;
 }
 
-td:nth-child(5) {
+.brackets-cardboard-table td:nth-child(5) {
     width: 10%;
 }
 
-td:nth-child(6) {
+.brackets-cardboard-table td:nth-child(6) {
     width: 10%;
     right: 0;
 }
