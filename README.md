@@ -21,8 +21,7 @@ This is very early in development. Not everything works. Check the console for m
 ## TODO
 * Interface (fix bugs to show/hide installed packages; the button is currently hidden)
 * Tests (make them, put in unittests)
-* Errors (handle them)
-* NPM manager
+* Errors (handle them better)
 * Preferences (set path variables, exclude managers, etc)
 * Load new managers dynamically
 
