@@ -146,8 +146,8 @@ define(function (require, exports, module) {
                 details.forEach(function(line) {
                     var name     = line.match(/^[\w-]+/)[0],
                         desc     = line.match(/\s.*/)[0].split('=')[0].trim(),
-                        authors  = line.match(/=\w*/g).join(', ').replace(/=/g, ''),
-                        date     = line.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}/)[0],
+                        authors  = (line.match(/=\w*/g)) ? line.match(/=\w*/g).join(', ').replace(/=/g, '') : '',
+                        date     = line.match(/\d{4}-\d{2}-\d{2} /)[0],
                         version  = (line.match(/\d*\.\d*\.\d*(-|\.|\w|\d)*/)) ? line.match(/\d*\.\d*\.\d*(-|\.|\w|\d)*/)[0] : '',
                         keywords = (line.match(/\d*\.\d*\.\d*(-|\.|\w|\d)*$/)) ? '': line.split(/\d*\.\d*\.\d*(-|\.|\w|\d)*\s/).pop().trim(), //version last on the line?
                         pkg      = [name, desc, authors, date, version, keywords];
