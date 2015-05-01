@@ -22,6 +22,7 @@ define(function (require, exports, module) {
         Node             = require("modules/Node"),
         Result           = require("modules/Result"),
         Status           = require("modules/Status"),
+        Batch            = require("node_modules/batch/index"),
         DOMAIN           = "brackets-cardboard",
         PATH             = projectDirectory._path,
         MANAGER          = "bower.js", //same as your file name
@@ -262,8 +263,6 @@ define(function (require, exports, module) {
                     var searchResults = JSON.parse(stdout),
                         pkgInfo = [];
 
-                    console.debug(search);
-
                     if (searchResults.length === 0) {
                         // TODO refactor this into a message
                         console.log('No results for', query);
@@ -272,35 +271,19 @@ define(function (require, exports, module) {
                         return;
                     }
 
-                    getResults(searchResults, 0, nodeCommand, BOWERPATH, pkgInfo);
+                    if (searchResults.length > 50) {
+                        showModal('Whoa there. Narrow your search. You\'ll lock your self out of Github');
+                        return;
+                    }
 
-                    // search.forEach(function (pkg) {
-                    //     var info = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'info', pkg.url]);
-                    //     var pkgDeferred = $.Deferred();
+                    var batch = new Batch;
+                    batch.concurrency(5);
 
-                    //     info.fail(function (err) {
-                    //         console.error('Could not list bower packages', err);
-                    //     });
-                    //     info.done(function (stdout) {
-                    //         var details = JSON.parse(stdout);
+                    searchResults.forEach(function (pkg) {
+                        batch.push(getInfo(pkg, nodeCommand, BOWERPATH, pkgInfo));
+                    });
 
-                    //         //id, manager, primary, secondary, link, data1, data2, data3, status
-                    //         var id        = details.latest.name,
-                    //             primary   = details.latest.name,
-                    //             secondary = details.latest.description || '',
-                    //             link      = details.latest.homepage,
-                    //             data1     = 'Version ' + (details.latest.version || 'Unknown'),
-                    //             data2     = 'License ' + (details.latest.license || 'Unknown'),
-                    //             data3     = '<div class="bower"></div>',
-                    //             status    = '',
-                    //             button   = '';
-
-                    //         pkgDeferred.resolve(new Result(id, MANAGER, primary, secondary, link, data1, data2, data3, status, button));
-
-                    //     }); // info
-
-                    //     pkgInfo.push(pkgDeferred.promise());
-                    // }); //forEach
+                    batch.end();
 
                     deferred.resolve(pkgInfo);
                 }); // list
@@ -312,42 +295,17 @@ define(function (require, exports, module) {
     }
 
     /**
-     * Wrapper for getInfo to limit the number of async calls
-     * @param  {[type]} searchResults [description]
-     * @param  {[type]} calls         [description]
-     * @param  {[type]} nodeCommand   [description]
-     * @param  {[type]} BOWERPATH     [description]
-     * @param  {[type]} pkgInfo       [description]
-     * @return {[type]}               [description]
-     */
-    function getResults (searchResults, calls, nodeCommand, BOWERPATH, pkgInfo) {
-        // From http://stackoverflow.com/questions/9539886/limiting-asynchronous-calls-in-node-js
-        // Limit async calls to one
-        var limit = 1;
-
-        while(calls < limit && searchResults.length > 0) {
-            var pkg = searchResults.shift();
-            getInfo(pkg, nodeCommand, BOWERPATH, pkgInfo, function() {
-                calls--;
-                if(searchResults.length > 0)
-                    getResults(searchResults, calls, nodeCommand, BOWERPATH, pkgInfo);
-            });
-            calls++;
-        }
-    }
-    
-    /**
      * Gets information about a package from Bower using the info command
      * @param  {[type]}   pkg         [description]
      * @param  {[type]}   nodeCommand [description]
      * @param  {[type]}   BOWERPATH   [description]
      * @param  {[type]}   pkgInfo     [description]
-     * @param  {Function} callback    [description]
      * @return {[type]}               [description]
      */
-    function getInfo (pkg, nodeCommand, BOWERPATH, pkgInfo, callback) {
-        var info = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'info', pkg.url]);
-        var pkgDeferred = $.Deferred();
+    function getInfo (pkg, nodeCommand, BOWERPATH, pkgInfo) {
+        var url = pkg.url,
+            info = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'info', url.replace(/git:\/\//, 'https://')]), // get through proxies and such
+            pkgDeferred = $.Deferred();
 
         info.fail(function (err) {
             console.error('Could not list bower packages', err);
@@ -370,8 +328,6 @@ define(function (require, exports, module) {
         }); // info
 
         pkgInfo.push(pkgDeferred.promise());
-
-        callback();
     }
 
     /**
