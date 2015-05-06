@@ -22,6 +22,7 @@ define(function (require, exports, module) {
         Node             = require("modules/Node"),
         Result           = require("modules/Result"),
         Status           = require("modules/Status"),
+        Batch            = require("node_modules/batch/index"),
         DOMAIN           = "brackets-cardboard",
         PATH             = projectDirectory._path,
         MANAGER          = "bower.js", //same as your file name
@@ -259,12 +260,10 @@ define(function (require, exports, module) {
                     showModal(err);
                 });
                 list.done(function (stdout) {
-                    var search = JSON.parse(stdout),
+                    var searchResults = JSON.parse(stdout),
                         pkgInfo = [];
 
-                    console.debug(search);
-
-                    if (search.length === 0) {
+                    if (searchResults.length === 0) {
                         // TODO refactor this into a message
                         console.log('No results for', query);
                         pkgInfo.push(new Result('', MANAGER, 'No results found for ' + query, '', SEARCH_URL, '', '', '', 'update', 'none'));
@@ -272,33 +271,19 @@ define(function (require, exports, module) {
                         return;
                     }
 
-                    search.forEach(function (pkg) {
-                        var info = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'info', pkg.url]);
-                        var pkgDeferred = $.Deferred();
+                    if (searchResults.length > 50) {
+                        showModal('Whoa there. Narrow your search. You\'ll lock your self out of Github');
+                        return;
+                    }
 
-                        info.fail(function (err) {
-                            console.error('Could not list bower packages', err);
-                        });
-                        info.done(function (stdout) {
-                            var details = JSON.parse(stdout);
+                    var batch = new Batch;
+                    batch.concurrency(5);
 
-                            //id, manager, primary, secondary, link, data1, data2, data3, status
-                            var id        = details.latest.name,
-                                primary   = details.latest.name,
-                                secondary = details.latest.description || '',
-                                link      = details.latest.homepage,
-                                data1     = 'Version ' + (details.latest.version || 'Unknown'),
-                                data2     = 'License ' + (details.latest.license || 'Unknown'),
-                                data3     = '<div class="bower"></div>',
-                                status    = '',
-                                button   = '';
+                    searchResults.forEach(function (pkg) {
+                        batch.push(getInfo(pkg, nodeCommand, BOWERPATH, pkgInfo));
+                    });
 
-                            pkgDeferred.resolve(new Result(id, MANAGER, primary, secondary, link, data1, data2, data3, status, button));
-
-                        }); // info
-
-                        pkgInfo.push(pkgDeferred.promise());
-                    }); //forEach
+                    batch.end();
 
                     deferred.resolve(pkgInfo);
                 }); // list
@@ -307,6 +292,42 @@ define(function (require, exports, module) {
 
         results.push(deferred.promise());
         return results;
+    }
+
+    /**
+     * Gets information about a package from Bower using the info command
+     * @param  {[type]}   pkg         [description]
+     * @param  {[type]}   nodeCommand [description]
+     * @param  {[type]}   BOWERPATH   [description]
+     * @param  {[type]}   pkgInfo     [description]
+     * @return {[type]}               [description]
+     */
+    function getInfo (pkg, nodeCommand, BOWERPATH, pkgInfo) {
+        var url = pkg.url,
+            info = nodeCommand.execute(PATH, BOWERPATH + '/bower', ['-j', 'info', url.replace(/git:\/\//, 'https://')]), // get through proxies and such
+            pkgDeferred = $.Deferred();
+
+        info.fail(function (err) {
+            console.error('Could not list bower packages', err);
+        });
+        info.done(function (stdout) {
+            var details = JSON.parse(stdout);
+
+            //id, manager, primary, secondary, link, data1, data2, data3, status
+            var id        = details.latest.name,
+                primary   = details.latest.name,
+                secondary = details.latest.description || '',
+                link      = details.latest.homepage,
+                data1     = 'Version ' + (details.latest.version || 'Unknown'),
+                data2     = 'License ' + (details.latest.license || 'Unknown'),
+                data3     = '<div class="bower"></div>',
+                status    = '',
+                button   = '';
+
+            pkgDeferred.resolve(new Result(id, MANAGER, primary, secondary, link, data1, data2, data3, status, button));
+        }); // info
+
+        pkgInfo.push(pkgDeferred.promise());
     }
 
     /**
