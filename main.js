@@ -14,7 +14,7 @@ define(function (require, exports, module) {
     // Modules
     var CommandManager    = brackets.getModule("command/CommandManager"),
         Menus             = brackets.getModule("command/Menus"),
-        PanelManager      = brackets.getModule("view/PanelManager"),
+        WorkspaceManager  = brackets.getModule("view/WorkspaceManager"),
         ExtensionUtils    = brackets.getModule("utils/ExtensionUtils"),
         AppInit           = brackets.getModule("utils/AppInit"),
         FileSystem        = brackets.getModule("filesystem/FileSystem"),
@@ -198,7 +198,7 @@ define(function (require, exports, module) {
             clearPanel();
 
             $('.brackets-cardboard-search input').addClass('brackets-cardboard-spinner'); // start spinner
-            
+
             if (uri && manager !== undefined) {
                 install(query, manager);
                 return;
@@ -206,7 +206,7 @@ define(function (require, exports, module) {
                 $('.brackets-cardboard-search input').removeClass('brackets-cardboard-spinner'); //stop spinner
                 return;
             }
-            
+
             if (manager === undefined) {
                 deferredReduce(Interface.search(query), function (results) {
                     var obj = { "results" : results };
@@ -319,7 +319,7 @@ define(function (require, exports, module) {
         var template = require("text!html/panel.html");
         var panelHtml = Mustache.render(template, Strings);
 
-        panel = PanelManager.createBottomPanel(COMMAND_ID, $(panelHtml), 200);
+        panel = WorkspaceManager.createBottomPanel(COMMAND_ID, $(panelHtml), 200);
 
         // Listeners on the panel
         var $cardboardPanel = $("#brackets-cardboard");
