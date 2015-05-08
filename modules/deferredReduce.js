@@ -4,6 +4,13 @@
 define(function (require, exports, module) {
     'use strict';
 
+    // Modules
+    var _              = brackets.getModule("thirdparty/lodash"),
+    
+    // Extension modules
+        Result         = require("modules/Result"),
+        Status         = require("modules/Status");
+
     /**
      * Recursively wait on single deferred objects or arrays of deferred objects.
      * @inner  {Array}        results       Eventual values of each promise
