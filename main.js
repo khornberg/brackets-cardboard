@@ -151,7 +151,6 @@ define(function (require, exports, module) {
             case "error":
                 addError(status, $result);
                 return;
-                break;
             default:
                 template = require("text!html/installButton.html");
                 $result.removeClass();
@@ -310,6 +309,7 @@ define(function (require, exports, module) {
      */
     function clearPanel() {
         $(".brackets-cardboard-table tr").remove();
+        $('.brackets-cardboard-search input').removeClass('brackets-cardboard-spinner'); //stop spinner
     }
 
     /**

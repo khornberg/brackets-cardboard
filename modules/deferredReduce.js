@@ -6,7 +6,7 @@ define(function (require, exports, module) {
 
     // Modules
     var _              = brackets.getModule("thirdparty/lodash"),
-    
+
     // Extension modules
         Result         = require("modules/Result"),
         Status         = require("modules/Status");
