@@ -1,5 +1,7 @@
 # Brackets Cardboard
 
+**I don't have time to continue work on this project. I hope some have found it useful.**
+
 Manage your project's packages or dependencies (depending on the tool) from within Brackets.
 
 Cardboard?

@@ -3,7 +3,7 @@
   "title": "Cardboard",
   "description": "Manage packages/dependencies for your project.",
   "homepage": "https://github.com/khornberg/brackets-cardboard",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "author": "Kyle Hornberg <kyle.hornberg@gmail.com> (http://khornberg.github.io) ",
   "license": "Apache 2.0",
   "engines": {
